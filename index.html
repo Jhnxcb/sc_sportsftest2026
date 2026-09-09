@@ -66,6 +66,7 @@
       z-index: 1;
       display: grid;
       grid-template-rows: 110px minmax(0, 1fr) 76px;
+      grid-template-columns: minmax(0, 1fr);
       width: 100%;
       height: 100vh;
       height: 100dvh;
@@ -303,13 +304,14 @@
     /* Schedule / Match Cards */
     .matches-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       grid-template-rows: repeat(2, 1fr);
       gap: 16px;
       height: 100%;
       min-height: 0;
     }
     .match-card {
+      min-width: 0;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -320,6 +322,14 @@
     .match-card .match-details { font-size: 22px; line-height: 1.25; font-weight: 600; color: rgba(255,255,255,.92); gap: 16px; }
     .match-details > span:first-child { min-width: 0; overflow-wrap: anywhere; }
     .match-details > span:last-child { flex-shrink: 0; }
+    .match-card > div { min-width: 0; gap: 12px; }
+    .match-card .flex-1 { min-width: 0; }
+    .match-card .text-4xl { font-size: clamp(22px, 2vw, 36px); line-height: 1.15; overflow-wrap: anywhere; }
+    .match-card .match-sport { min-width: 0; overflow-wrap: anywhere; }
+    .match-card .match-status { flex-shrink: 0; }
+    .match-card .match-details { flex-wrap: wrap; }
+    .ticker-track { min-width: 0; }
+    .display-shell > * { min-width: 0; }
 
     /* Media View */
     .media-card {
