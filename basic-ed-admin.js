@@ -1,5 +1,13 @@
 // Department editors reuse the College table and score-controller styles.
 let basicEdReady = false;
+function editableAwardEvents(data) {
+  // Match the saved database schema so score-only saves cannot introduce new event IDs.
+  if (!Array.isArray(data.specialEvents)) return events;
+  return data.specialEvents.map(row => events.find(event => event.id === row.eventId) || {
+    id: row.eventId,
+    name: row.eventId === 'pageant' ? 'Mr. & Ms. Sportsfest (combined result)' : row.eventId
+  });
+}
 function renderBasicEdAdmin(data) {
   basicEdReady = Array.isArray(data.basicEdLeaderboard) && Array.isArray(data.specialEvents);
   document.querySelectorAll('.basic-ed-connection').forEach(note => {
@@ -28,7 +36,7 @@ function renderBasicEdAdmin(data) {
   });
   const root = document.getElementById('basic-admin-awards');
   root.innerHTML = '<div class="basic-award-grid"></div>';
-  events.forEach(event => {
+  editableAwardEvents(data).forEach(event => {
     const card = document.createElement('article');
     card.className = 'basic-award-card';
     const title = document.createElement('h2');

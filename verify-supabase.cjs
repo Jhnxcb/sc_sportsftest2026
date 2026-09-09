@@ -3,6 +3,20 @@ const { PGlite } = require('@electric-sql/pglite');
 const fs = require('node:fs');
 const assert = require('node:assert/strict');
 const clone = value => JSON.parse(JSON.stringify(value));
+const vm = require('node:vm');
+const editor = vm.createContext({});
+vm.runInContext(fs.readFileSync('basic-ed-data.js', 'utf8') + '\n' + fs.readFileSync('basic-ed-admin.js', 'utf8'), editor);
+async function checkEditorSave(db) {
+  const original = (await db.query('select document from sportsfest_private.dashboard')).rows[0].document;
+  editor.data = clone(original);
+  const ids = JSON.parse(vm.runInContext('JSON.stringify(editableAwardEvents(data).map(event => event.id))', editor));
+  const draft = clone(original);
+  draft.specialEvents = ids.map(eventId => ({ eventId, winnerTeamId: original.specialEvents.find(row => row.eventId === eventId).winnerTeamId }));
+  draft.leaderboard = [{ dept: 'SECSA', points: 2 }];
+  const validated = (await db.query('select sportsfest_private.validate_document($1::jsonb) as document', [JSON.stringify(draft)])).rows[0].document;
+  assert.equal(validated.leaderboard[0].points, draft.leaderboard[0].points);
+  assert.deepEqual(validated.specialEvents, original.specialEvents);
+}
 (async () => {
   const db = new PGlite();
   const owner = '00000000-0000-0000-0000-000000000001';
@@ -17,11 +31,13 @@ const clone = value => JSON.parse(JSON.stringify(value));
     insert into auth.users(id,email) values('${owner}','owner@example.com'),('${admin}','admin@example.com'),('${stranger}','stranger@example.com');`);
   await db.exec(fs.readFileSync('supabase/migrations/202609070001_sportsfest.sql','utf8'));
   await db.exec(`update sportsfest_private.dashboard set document=jsonb_set(document,'{specialEvents,2,winnerTeamId}','"harks"'::jsonb)`);
+  await checkEditorSave(db);
   await db.exec(fs.readFileSync('supabase/migrations/202609080001_split_pageant.sql','utf8'));
   const migrated = (await db.query('select document from sportsfest_private.dashboard')).rows[0].document;
   assert.deepEqual(migrated.specialEvents.map(e=>e.eventId),['cheerdance','bench','mr','ms']);
   assert.ok(migrated.specialEvents.slice(2).every(e=>e.winnerTeamId===''));
   assert.equal((await db.query('select special_events from sportsfest_private.pageant_backup')).rows[0].special_events[2].winnerTeamId,'harks');
+  await checkEditorSave(db);
   await db.exec(fs.readFileSync('supabase/migrations/202609080001_split_pageant.sql','utf8'));
   assert.deepEqual((await db.query('select document from sportsfest_private.dashboard')).rows[0].document,migrated);
 

@@ -798,8 +798,9 @@
     }
 
     function matchTeam(id) {
-      const basic = Object.values(departments).flatMap(dept => dept.teams).find(team => team.id.toUpperCase() === id);
-      return basic ? {short:basic.name,color:'#f5c042'} : DEPARTMENTS[id];
+      const teamId = String(id || '').toUpperCase();
+      const basic = Object.values(departments).flatMap(dept => dept.teams).find(team => team.id.toUpperCase() === teamId);
+      return basic ? {short:basic.name,color:basic.color} : DEPARTMENTS[teamId];
     }
     function renderMatches() {
       const collection = VIEWS[state.viewIndex]?.id === 'matches2' ? 'matches2' : 'matches';
