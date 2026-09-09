@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#10091d"><title>Sportsfest Mobile Scores</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#10091d;color:#fff;font:16px/1.5 system-ui,sans-serif}main{max-width:720px;margin:auto;padding:24px 16px 48px}header img{width:190px;height:72px;object-fit:contain}h1{font-size:30px;margin:16px 0 4px}#status{color:#c6bbd5;font-size:13px;margin-bottom:20px}label{display:block;font-size:13px;color:#c6bbd5}select,button{font:inherit;min-height:48px;border:1px solid #66517f;border-radius:12px;background:#251835;color:#fff;padding:10px 12px}select{width:100%;margin:6px 0 20px}button{cursor:pointer}ol{list-style:none;padding:0;margin:0}li{display:grid;grid-template-columns:28px 48px minmax(0,1fr) auto;gap:10px;align-items:center;background:#20152d;border:1px solid #ffffff18;border-radius:16px;padding:16px 12px;margin:10px 0}li:first-child{border-color:#e5b85488}li img{width:48px;height:54px;object-fit:contain}li strong{font-size:16px;overflow-wrap:anywhere}li small{display:block;font-size:12px;color:#c6bbd5}.score{text-align:right;font-size:26px;font-weight:800}.score small{font-weight:400;font-size:10px}.rank{color:#efc95e;font-weight:700}.actions{display:flex;gap:16px;align-items:center;margin-top:22px;flex-wrap:wrap}a{color:#e6caff}#notice{padding:14px;border-radius:12px;background:#20152d;white-space:pre-wrap;overflow-wrap:anywhere}#notice:empty{display:none}@media(max-width:360px){li{grid-template-columns:22px 36px minmax(0,1fr) auto;gap:7px;padding:12px 8px}li img{width:36px}.score{font-size:22px}}
+</style></head>
+<body><main><header><img src="logo.svg" alt="Southlandfest 2026"><h1>Team standings</h1><div id="status" role="status">Loading scores…</div></header>
+<label for="department">Department</label><select id="department"><option value="senior">Senior High School</option><option value="junior">Junior High School</option><option value="grade">Grade School</option><option value="college">College</option></select>
+<ol id="standings" aria-label="Team standings"></ol><p id="empty"></p><div id="notice"></div>
+<div class="actions"><button id="refresh" type="button">Refresh scores</button><a href="mobile.html">Mobile admin</a><a href="index.html">TV display</a></div>
+</main><script src="basic-ed-data.js"></script><script src="config.js"></script><script src="supabase-client.js"></script><script src="scores.js"></script></body></html>

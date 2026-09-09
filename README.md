@@ -26,11 +26,17 @@ npx serve . -l 4173
 
 - Administrator: http://localhost:4173/admin.html
 - TV display: http://localhost:4173/index.html
+- Mobile admin: http://localhost:4173/mobile.html
+- Mobile scores (no sign-in): http://localhost:4173/scores.html
 - One-time migration: http://localhost:4173/migrate-to-supabase.html
 
 Sign in using an authorized administrator's email and password. Review and publish
 score changes with **Save changes**. The TV receives updates every 30 seconds and
 retains its most recent successful response for offline recovery.
+
+After changing `admin.html`, run `npm run build` to refresh the separate mobile
+admin page. It shares the same authentication and save logic, with larger score
+controls and a section picker. The mobile scores page refreshes every 30 seconds.
 
 The app includes department standings, special-event winners, two match schedules,
 announcements, video playlists, TV section controls, protected saving, points

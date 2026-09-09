@@ -2,6 +2,7 @@
   "name": "sportsfest-local",
   "private": true,
   "scripts": {
+    "build": "node build-mobile.cjs",
     "test": "node verify-supabase.cjs && node verify-supabase-client.cjs && node verify-supabase-edge.cjs",
     "test:ui": "node verify-sportsfest.cjs"
   },

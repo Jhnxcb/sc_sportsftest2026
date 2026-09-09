@@ -1,0 +1,32 @@
+/* Dedicated mobile entry, sharing the desktop admin data and controls. */
+html { scroll-padding-top: 190px; }
+body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); }
+.tabs-strip { display: none !important; }
+.mobile-navigation { display: block; padding: 10px 16px; background: #160e23; border-bottom: 1px solid #ffffff15; }
+.mobile-navigation span { display: block; margin-bottom: 5px; color: #c5b6d7; font-size: 12px; }
+.mobile-navigation select { width: 100%; min-height: 48px; font-size: 16px; }
+.shell { margin: 0 auto !important; width: min(100% - 28px, 760px) !important; padding: 20px 0 90px !important; }
+.topbar { padding: 12px 16px; flex-wrap: wrap; gap: 10px; }
+.brand { width: 100%; min-width: 0; flex-wrap: wrap; }
+.status-badge { max-width: 100%; white-space: normal; }
+#status-text { overflow-wrap: anywhere; }
+.top-actions { width: 100%; }
+#save-top { position: fixed; bottom: calc(14px + env(safe-area-inset-bottom)); left: 16px; width: calc(100% - 32px); min-height: 52px; z-index: 100; font-size: 16px; box-shadow: 0 4px 24px #0009; }
+.panel-head { flex-wrap: wrap; }
+.overview-departments,.overview-columns,.basic-award-grid,.media-card,.media-fields { grid-template-columns: minmax(0,1fr); }
+.match-fixture-card { grid-template-columns: minmax(0,1fr) !important; }
+.fixture-actions { grid-column: 1 !important; }
+input,select,textarea { font-size: 16px !important; }
+.button,.points-btn { min-height: 44px; }
+.safety-dialog { box-sizing: border-box; }
+@media(max-width:700px) {
+  tbody tr { grid-template-columns: 30px minmax(0,1fr); gap: 8px; padding: 12px; }
+  tbody tr td:last-child { grid-column: 2; }
+  .team-cell strong { white-space: normal; overflow: visible; overflow-wrap: anywhere; font-size: 15px; }
+  .team-cell img { width: 42px; height: 42px; }
+  .points-controller { justify-content: space-between; width: 100%; gap: 10px; }
+  .points-btn { width: 48px; height: 46px; }
+  .points-input { flex: 1; width: 70px; min-height: 46px; }
+  .user-identity { min-width: 0; }
+  .user-identity small { max-width: 170px; overflow: hidden; text-overflow: ellipsis; }
+}
