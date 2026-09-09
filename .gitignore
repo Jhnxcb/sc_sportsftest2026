@@ -1,0 +1,16 @@
+node_modules/
+.env
+.env.*
+!.env.example
+supabase/.temp/
+migration-backups/
+supabase/setup-review.html
+PROMO VIDEO/
+.tmp-image-tools/
+design-backups/
+mr-ms-update/
+mr-ms-update.zip
+committee-online/
+*-preview.png
+IMG_*.jpg
+supabase/add-john-mark-admin.sql

@@ -1,0 +1,4 @@
+[functions.manage-admins]
+# This function validates every JWT with Supabase Auth getUser before doing work.
+# This supports projects using asymmetric signing keys.
+verify_jwt = false

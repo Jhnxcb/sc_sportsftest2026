@@ -1,0 +1,73 @@
+/* Cover-inspired trial. Restore the saved index.html to return to the dark UI. */
+:root {
+  --bg-dark: #c4dcf3;
+  --card-bg: rgba(255,255,255,.76);
+  --card-border: rgba(93,34,128,.15);
+  --gold-accent: #ff7414;
+}
+body { color: #36134e; background: radial-gradient(ellipse at 50% 42%,#edf4f9 0%,#d7e6f4 44%,#b9d7f5 100%); }
+.ambient-canvas::before,.ambient-canvas::after {
+  content: ''; position: absolute; width: 460px; height: 460px;
+  background: url('cover-ribbons.svg') center / contain no-repeat;
+  pointer-events: none;
+}
+.ambient-canvas::before { top: -230px; left: -210px; transform: rotate(180deg); opacity: .8; }
+.ambient-canvas::after { bottom: -125px; right: -155px; opacity: .9; }
+.glow-orb-1 { background: radial-gradient(circle,#fff57a70,transparent 68%); top:-350px; left:auto; right:-150px; }
+.glow-orb-2 { display: none; }
+.glass-nav { background: rgba(247,251,255,.86); border-color: #6b238820; backdrop-filter: blur(24px); }
+.display-shell > header { padding-left: 3vw; padding-right: 3vw; }
+.brand-logo { display: none; }
+.cover-brand { display: flex; align-items: center; gap: 12px; }
+.cover-flame { display: block; width: 48px; height: 68px; background: url('cover-flame.svg') center / contain no-repeat; }
+.cover-brand strong { color: #710085; font-size: 27px; font-weight: 850; letter-spacing: -1.2px; line-height: 1.1; }
+.cover-brand strong span { color: #87069b; }
+.cover-brand small { display: flex; align-items: center; gap: 12px; color: #cb5100; font-size: 10px; font-weight: 800; letter-spacing: 1.8px; margin-top: 6px; }
+.cover-brand b { padding: 3px 9px; border-radius: 30px; color: white; background: linear-gradient(90deg,#ff9d15,#ff4119); font-size: 8px; letter-spacing: 1px; }
+.display-shell [class*="text-white"] { color: #391b53; }
+.display-shell [class*="text-white/"] { color: #655c78; }
+.display-shell [class*="text-amber-"] { color: #a94500; }
+.display-shell [class*="border-white/"] { border-color: #64218b20; }
+#clock { color: #650080; }
+.apple-badge { background: #fff9; border-color: #782f9324; color: #674076; }
+.theme-pill { color: #a84300; background: #fff1dc; border-color: #fbb96d; }
+.sync-divider { background: #782f932a; }
+.main-stage { width: min(1440px,92vw); }
+#view-leaderboard h2,#view-matches h2,#view-awards h2 { color: #710085; letter-spacing: -1px; }
+#view-leaderboard > div > div:first-child { padding-top: 10px; padding-bottom: 20px; }
+#view-leaderboard > div > div:first-child > div > span { color: #af4400; letter-spacing: 2.4px; font-size: 10px; }
+#leaderboard { gap: 8px; }
+.leader-row { background: rgba(255,255,255,.82); border: 1px solid #ffffff; box-shadow: 0 5px 18px #4a32750a; border-radius: 17px; }
+.leader-row::before { content: ''; position: absolute; inset: 15px auto 15px 0; width: 4px; border-radius: 0 4px 4px 0; background: var(--team-color,#840095); }
+.leader-row.place-1 { background: linear-gradient(100deg,#fff3d9,#fffaf1 45%,#ffffffeb); border-color: #f5ba61; }
+.leader-row h3 { color: #471560; }
+.leader-points { color: #740080 !important; animation: none; }
+.leader-row.place-1 .leader-points { color: #b24b00 !important; }
+.leader-row > div:first-child > span { color: #6b297e; background: #eee2f4; border: 1px solid #e2cce9; }
+.leader-row.place-1 > div:first-child > span { color: #fff; background: linear-gradient(135deg,#ffb322,#ed6814); border-color: #ee901a; }
+.leader-logo { filter: drop-shadow(0 3px 4px #54316720); }
+.leader-bar-track { background: #e7e3ee; border: 0; box-shadow: inset 0 1px 2px #48205012; }
+.leader-bar-fill { box-shadow: none; }
+.glass-card { box-shadow: 0 8px 25px #4a327510; }
+.upcoming-card h3 { color: #710085; }
+.upcoming-card p { color: #655c78; }
+.public-award > span { color: #a94500; }
+.award-star { color: #b086c3; }
+.progress-rail { background: #71308b16; }
+.progress-bar { background: linear-gradient(90deg,#ffbf16,#ff6416,#f13451); }
+.slide-dot { background: #77309530; }
+.slide-dot.active { background: #820092; }
+.display-shell > footer { background: #f7fbfff0; }
+.display-shell.video-mode > footer { background: linear-gradient(0deg,rgba(8,3,15,.92),rgba(8,3,15,.3)); }
+.display-shell.video-mode #ticker-message { color: white; }
+.display-shell.video-mode .main-stage { height: 100vh; height: 100dvh; }
+@media(max-height:700px) {
+  #view-leaderboard > div > div:first-child { padding-top: 0; padding-bottom: 10px; }
+}
+@media(max-width:1000px) {
+  .cover-brand strong { font-size: 21px; }
+  .cover-brand small { font-size: 8px; gap: 7px; letter-spacing: 1px; }
+  .cover-flame { width: 36px; height: 48px; }
+  .cover-brand { gap: 8px; }
+  .ambient-canvas::after { opacity: .35; }
+}

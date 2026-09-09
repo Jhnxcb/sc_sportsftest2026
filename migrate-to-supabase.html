@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sportsfest · Import to Supabase</title>
+<style>
+  *{box-sizing:border-box}body{margin:0;background:#150d21;color:#f8f4fc;font:16px/1.6 system-ui}main{max-width:800px;margin:48px auto;padding:0 24px 64px}h1{line-height:1.2}section{background:#231832;border:1px solid #574466;border-radius:16px;padding:24px;margin:24px 0}label{display:block;margin:16px 0}input{display:block;width:100%;margin:6px 0;padding:12px;border:1px solid #826696;border-radius:8px;background:#170e22;color:#fff;font:inherit}button,a.button{display:inline-block;padding:12px 18px;border:0;border-radius:8px;background:#ffbb77;color:#21102e;font:600 16px system-ui;cursor:pointer;text-decoration:none}button:disabled{opacity:.45;cursor:default}a{color:#ffd3a5}pre{white-space:pre-wrap;overflow-wrap:anywhere}small{color:#d2bfdc}.error{color:#ffb5b5}
+</style></head><body><main>
+<h1>Move your Sportsfest records to Supabase</h1>
+<p>Import one complete copy of your saved scores, schedules, announcements, videos, TV settings, awards, and points history. Existing Google Sheets records remain intact.</p>
+<section><h2>1. Export your current records</h2>
+<form id="legacy-form">
+<label>Current Apps Script URL<input id="legacy-url" type="url" required value="https://script.google.com/macros/s/AKfycbycE3dNOIaKvUd7slN3iB3hR7OLPhvWkNKhiPVd0phu5VDZ8XbZlLPG4KAjldshc9K6/exec"></label>
+<label>Current administrator username<input id="legacy-username" required autocomplete="username"></label>
+<label>Current administrator password<input id="legacy-password" type="password" required autocomplete="current-password"></label>
+<button>Export saved records</button></form>
+<p>Or choose a previously downloaded complete JSON backup:</p><input id="backup-file" type="file" accept=".json,application/json" aria-label="Complete JSON backup">
+<p id="export-status" role="status"></p><pre id="preview"></pre><button id="download" disabled>Download JSON backup</button>
+</section>
+<section><h2>2. Sign in to the new database</h2><p>Use the owner account created in your Supabase project. Do not save scores in the new dashboard before importing.</p>
+<form id="supabase-form"><label>Owner email<input id="email" type="email" required autocomplete="username"></label><label>Password<input id="password" type="password" required autocomplete="current-password"></label><button>Sign in to Supabase</button></form><p id="auth-status" role="status"></p></section>
+<section><h2>3. Import reviewed records</h2><p>Pause score entry in the old dashboard first. This import is allowed only into an untouched Supabase database and includes the full history.</p>
+<label><input id="reviewed" type="checkbox" style="display:inline;width:auto"> I reviewed the records, downloaded a backup, and paused editing in Google Sheets.</label>
+<button id="import" disabled>Import into Supabase</button><p id="import-status" role="status"></p></section>
+<a class="button" href="admin.html">Open administrator dashboard</a>
+</main><script src="config.js"></script><script src="supabase-client.js"></script><script src="supabase-migration.js"></script></body></html>

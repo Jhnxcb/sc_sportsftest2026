@@ -1,0 +1,11 @@
+{
+  "name": "sportsfest-local",
+  "private": true,
+  "scripts": {
+    "test": "node verify-supabase.cjs && node verify-supabase-client.cjs && node verify-supabase-edge.cjs",
+    "test:ui": "node verify-sportsfest.cjs"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.3.14"
+  }
+}

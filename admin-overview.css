@@ -1,0 +1,25 @@
+#overview-details { margin-top: 28px; }
+.overview-section-heading, .overview-card-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.overview-section-heading h2, .overview-card h2, .overview-card h3 { margin: 0; font-size: 16px; font-weight: 650; }
+.overview-section-heading > span, .overview-muted, .overview-match small, .overview-history-item small { color: #a99bb9; font-size: 13px; line-height: 1.6; }
+.overview-departments { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.overview-card { padding: 20px; min-width: 0; background: #191024; border: 1px solid #ffffff12; border-radius: 16px; }
+.overview-card .button.small { font-size: 12px; padding: 6px 10px; }
+.overview-standing-list { margin: 0; padding: 0; list-style: none; }
+.overview-standing-list li { display: flex; align-items: center; gap: 10px; min-height: 56px; padding: 8px 0; border-top: 1px solid #ffffff0b; }
+.overview-standing-list img { width: 32px; height: 32px; object-fit: contain; flex-shrink: 0; }
+.overview-standing-list li > span { flex: 1; font-size: 13px; overflow-wrap: anywhere; }
+.overview-standing-list strong { font-size: 16px; text-align: right; font-variant-numeric: tabular-nums; }
+.overview-standing-list small { display: block; color: #a99bb9; font-size: 10px; font-weight: 400; }
+.overview-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 16px; }
+.overview-history-item, .overview-match { padding: 12px 0; border-top: 1px solid #ffffff0b; }
+.overview-history-item > div, .overview-match-heading, .overview-award { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; font-size: 14px; }
+.overview-history-item b { color: #ffc17b; font-weight: 500; }
+.overview-match p { font-size: 14px; margin: 8px 0; }
+.overview-match-heading > span { color: #ffc17b; font-size: 12px; }
+.overview-award { padding: 14px 0; border-top: 1px solid #ffffff0b; }
+.overview-award > span { color: #a99bb9; }
+.overview-section-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+.overview-section-tags > span { border: 1px solid #ffbc682b; background: #ffbc680a; color: #ffd39b; border-radius: 8px; padding: 7px 10px; font-size: 13px; }
+@media(max-width: 1350px) { .overview-departments { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media(max-width: 700px) { .overview-departments, .overview-columns { grid-template-columns: 1fr; } .overview-card { padding: 16px; } }

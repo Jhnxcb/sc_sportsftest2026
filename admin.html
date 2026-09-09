@@ -1,0 +1,1246 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0d0819" />
+  <title>Sportsfest 2026 Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #090514;
+      --surface-1: #130a21;
+      --surface-2: #1b102e;
+      --surface-3: #261640;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-focus: #a855f7;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-subtle: #64748b;
+      --primary: #f97316;
+      --primary-glow: rgba(249, 115, 22, 0.25);
+      --success: #10b981;
+      --danger: #f43f5e;
+      --danger-bg: rgba(244, 63, 94, 0.1);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(ellipse 60% 40% at 20% -10%, rgba(126, 34, 206, 0.22) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 50% at 85% 100%, rgba(249, 115, 22, 0.12) 0%, transparent 60%);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; border: none; outline: none; }
+    .hidden { display: none !important; }
+
+    /* Button Controls */
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 13px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      background: var(--surface-3);
+      color: var(--text);
+      border: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .button:hover {
+      background: #311c52;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .button.primary {
+      background: linear-gradient(135deg, var(--primary), #e11d48);
+      color: #fff;
+      border: none;
+      box-shadow: 0 4px 16px var(--primary-glow);
+    }
+    .button.primary:hover {
+      filter: brightness(1.08);
+      box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4);
+    }
+    .button.ghost {
+      background: transparent;
+      border-color: transparent;
+      color: var(--text-muted);
+    }
+    .button.ghost:hover {
+      background: var(--surface-2);
+      color: var(--text);
+    }
+    .button.danger {
+      background: var(--danger-bg);
+      color: #fda4af;
+      border: 1px solid rgba(244, 63, 94, 0.25);
+    }
+    .button.danger:hover {
+      background: rgba(244, 63, 94, 0.2);
+      border-color: var(--danger);
+    }
+    .button.small {
+      padding: 6px 10px;
+      font-size: 12px;
+    }
+
+    /* Forms & Inputs */
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: rgba(10, 5, 18, 0.7);
+      color: var(--text);
+      padding: 9px 12px;
+      font-size: 13px;
+      transition: border 0.15s, box-shadow 0.15s;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
+      outline: none;
+    }
+    textarea { resize: vertical; min-height: 65px; }
+
+    /* Login Modal Screen */
+    .login-screen {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+    .login-card {
+      width: min(420px, 100%);
+      padding: 40px 32px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: linear-gradient(160deg, rgba(27, 16, 46, 0.95), rgba(12, 6, 22, 0.95));
+      backdrop-filter: blur(28px);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+    }
+    .login-logo {
+      display: block;
+      width: 160px;
+      height: 80px;
+      margin: 0 auto 16px;
+      object-fit: contain;
+    }
+    .login-card h1 {
+      margin: 0;
+      text-align: center;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+    .login-card p {
+      margin: 8px 0 24px;
+      color: var(--text-muted);
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .login-card .button { width: 100%; margin-top: 24px; padding: 12px; }
+    .login-error {
+      min-height: 20px;
+      margin-top: 14px;
+      color: var(--danger);
+      text-align: center;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .login-foot {
+      margin-top: 28px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+      color: var(--text-subtle);
+      text-align: center;
+      font-size: 11px;
+    }
+
+    /* Fixed Navigation & Header Bar */
+    .app-nav-wrapper {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(9, 5, 20, 0.88);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 64px;
+      padding: 8px max(24px, calc((100vw - 1440px) / 2));
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .brand { display: flex; align-items: center; gap: 14px; }
+    .brand img { width: 95px; height: 42px; object-fit: contain; }
+    .brand-copy strong { display: block; font-size: 15px; font-weight: 700; }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--surface-1);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: #eab308; }
+    .dot.ok { background: var(--success); box-shadow: 0 0 8px rgba(16, 185, 129, 0.6); }
+    .dot.error { background: var(--danger); box-shadow: 0 0 8px rgba(244, 63, 94, 0.6); }
+
+    .top-actions { display: flex; align-items: center; gap: 8px; }
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+      margin-right: 4px;
+    }
+    .user-avatar,
+    .user-avatar-fallback {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 34px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+    .user-avatar { display: block; object-fit: cover; background: var(--surface-2); }
+    .user-avatar-fallback {
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: linear-gradient(145deg, var(--primary), #f59e0b);
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .user-identity { min-width: 0; line-height: 1.15; }
+    .user-identity strong {
+      display: block;
+      max-width: 150px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 12px;
+    }
+    .user-identity small { color: var(--text-subtle); font-size: 10px; }
+    .user-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-1);
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* Sub-nav Tab Bar */
+    .tabs-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px max(24px, calc((100vw - 1440px) / 2));
+      overflow-x: auto;
+    }
+    .tabs { display: flex; gap: 4px; }
+    .tab {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .tab:hover { color: var(--text); background: var(--surface-2); }
+    .tab.active { background: var(--surface-3); color: #fff; }
+    .tab-badge {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 999px;
+      font-size: 10px;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    /* Workspace Shell */
+    .shell {
+      width: min(1440px, calc(100% - 48px));
+      margin: 0 auto;
+      padding: 24px 0 80px;
+    }
+    .panel { display: none; }
+    .panel.active { display: block; animation: fadeIn 0.2s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
+
+    .panel-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .panel-head h1 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+    .panel-head p { margin: 4px 0 0; color: var(--text-muted); font-size: 13px; }
+
+    /* Overview Metrics Cards */
+    .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .metric {
+      padding: 20px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(145deg, var(--surface-2), var(--surface-1));
+      border: 1px solid var(--border);
+    }
+    .metric span {
+      display: block;
+      color: var(--text-subtle);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .metric strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 30px;
+      font-weight: 800;
+    }
+    .metric strong.time { font-size: 15px; font-weight: 600; line-height: 1.4; }
+    .metric strong.time small { color: var(--text-muted); font-weight: 400; font-size: 12px; }
+
+    /* Leaderboard Component */
+    .table-wrap {
+      background: var(--surface-1);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      padding: 12px 20px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .rank-indicator {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: inline-grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--surface-3);
+      color: var(--text-muted);
+    }
+    .team-cell { display: flex; align-items: center; gap: 14px; min-width: 220px; }
+    .team-cell img { width: 40px; height: 40px; object-fit: contain; }
+    .team-cell strong { display: block; font-size: 14px; }
+    .team-cell span { color: var(--text-muted); font-size: 12px; }
+    
+    .points-controller {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(10, 5, 18, 0.6);
+      padding: 3px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+    .points-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      background: var(--surface-2);
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .points-btn:hover { background: var(--surface-3); }
+    .points-input {
+      width: 80px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 800;
+      border: none;
+      background: transparent;
+      padding: 0;
+    }
+
+    /* Structured Fixture Card */
+    .editor-list { display: grid; gap: 12px; }
+    .match-fixture-card {
+      background: var(--surface-1);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      display: grid;
+      grid-template-columns: 2.2fr 2fr 1.6fr 90px;
+      gap: 20px;
+      align-items: center;
+    }
+    .fixture-teams {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .vs-separator {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--text-subtle);
+      text-transform: uppercase;
+      text-align: center;
+    }
+    .fixture-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .fixture-status {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .fixture-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 12px;
+    }
+
+    /* Marquee Simulator for Announcements */
+    .ticker-preview-wrapper {
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: rgba(10, 5, 18, 0.9);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .ticker-tag {
+      font-size: 10px;
+      font-weight: 800;
+      background: var(--primary);
+      padding: 3px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+    .ticker-viewport {
+      overflow: hidden;
+      white-space: nowrap;
+      flex: 1;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    /* Split-Layout Media Item */
+    .media-card {
+      display: grid;
+      grid-template-columns: 1fr 240px 90px;
+      gap: 20px;
+      background: var(--surface-1);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      align-items: center;
+    }
+    .media-inputs {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 10px;
+    }
+    .media-preview-box {
+      width: 100%;
+      height: 120px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-sm);
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .media-preview-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .media-duration-chip {
+      position: absolute;
+      bottom: 6px;
+      right: 6px;
+      padding: 2px 6px;
+      font-size: 10px;
+      font-weight: 700;
+      border-radius: 4px;
+      background: rgba(0, 0, 0, 0.7);
+    }
+
+    .active-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      user-select: none;
+    }
+    .active-toggle input { width: 15px; height: 15px; margin: 0; accent-color: var(--primary); }
+
+    .empty {
+      padding: 48px 20px;
+      text-align: center;
+      color: var(--text-muted);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-md);
+      font-size: 14px;
+    }
+
+    /* Floating Feedback Toast */
+    .toast {
+      position: fixed;
+      z-index: 70;
+      bottom: 24px;
+      right: 24px;
+      max-width: 360px;
+      padding: 12px 18px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-3);
+      border: 1px solid var(--border);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      font-size: 13px;
+      font-weight: 500;
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: all 0.25s ease;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .toast.error { border-color: rgba(244, 63, 94, 0.4); color: #fda4af; }
+
+    @media (max-width: 1100px) {
+      .match-fixture-card { grid-template-columns: 1fr 1fr; }
+      .fixture-actions { grid-column: span 2; flex-direction: row; justify-content: space-between; }
+      .cards { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 720px) {
+      body { overflow-x: hidden; }
+      input, select, textarea { min-height: 44px; padding: 11px 12px; font-size: 16px; }
+      textarea { min-height: 96px; }
+      .button { min-height: 42px; padding: 10px 13px; }
+      .button.small { min-height: 40px; padding: 9px 12px; }
+
+      .login-screen { align-items: start; padding: 18px 12px; }
+      .login-card { margin-top: 4vh; padding: 28px 18px 22px; border-radius: 16px; }
+      .login-logo { width: 190px; height: 90px; }
+      .login-card h1 { font-size: 22px; }
+      .login-card .button { min-height: 48px; font-size: 15px; }
+
+      .topbar {
+        min-height: 0;
+        padding: 8px 12px 10px;
+        flex-wrap: wrap;
+        gap: 7px 10px;
+      }
+      .brand { min-width: 0; flex: 1; gap: 8px; }
+      .brand img { width: 86px; height: 38px; }
+      .brand-copy, .user-pill, .live-view { display: none !important; }
+      .status-badge { padding: 4px 8px; font-size: 10px; }
+      .top-actions { width: 100%; gap: 7px; }
+      .user-profile { display: flex; min-width: 0; flex: 1; margin: 0; }
+      .user-avatar, .user-avatar-fallback { width: 32px; height: 32px; flex-basis: 32px; }
+      .user-identity strong { max-width: 115px; }
+      .top-actions .button { min-height: 38px; padding: 8px 10px; font-size: 11px; }
+
+      .tabs-strip {
+        display: block;
+        padding: 6px 8px;
+        overflow-x: auto;
+        overscroll-behavior-inline: contain;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+      }
+      .tabs-strip::-webkit-scrollbar { display: none; }
+      .tabs { width: max-content; min-width: 100%; }
+      .tab { min-height: 40px; padding: 9px 13px; font-size: 12px; }
+      #save-hint { display: none; }
+
+      .shell { width: calc(100% - 24px); padding: 18px 0 48px; }
+      .panel-head { align-items: stretch; flex-direction: column; gap: 12px; margin-bottom: 14px; }
+      .panel-head h1 { font-size: 20px; }
+      .panel-head p { font-size: 12px; line-height: 1.5; }
+      .panel-head > .button { width: 100%; }
+      .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .metric { min-width: 0; padding: 15px 13px; }
+      .metric strong { font-size: 25px; }
+      .metric strong.time { overflow-wrap: anywhere; font-size: 12px; }
+
+      .table-wrap { overflow: visible; border: 0; background: transparent; }
+      table, tbody { display: block; }
+      thead { display: none; }
+      tbody tr {
+        display: grid;
+        grid-template-columns: 34px minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 9px;
+        padding: 8px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        background: var(--surface-1);
+      }
+      td { min-width: 0; padding: 5px 3px; border: 0; }
+      .team-cell { min-width: 0; gap: 8px; }
+      .team-cell img { width: 34px; height: 34px; }
+      .team-cell strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
+      .team-cell span { font-size: 10px; }
+      .points-controller { gap: 2px; }
+      .points-btn { width: 34px; height: 36px; font-size: 18px; }
+      .points-input { width: 50px; min-height: 36px; padding: 0 2px; font-size: 15px; }
+
+      .match-fixture-card,
+      .match-fixture-card.announcement-row {
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 14px;
+        padding: 15px 13px;
+      }
+      .fixture-details { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+      .fixture-actions { grid-column: 1 !important; align-items: stretch; }
+      .fixture-actions .button { width: 100%; }
+      .active-toggle { min-height: 40px; flex-direction: row; }
+      .active-toggle input { width: 20px; height: 20px; }
+      .ticker-preview-wrapper { align-items: flex-start; flex-direction: column; padding: 12px; }
+      .ticker-viewport { width: 100%; white-space: normal; overflow-wrap: anywhere; line-height: 1.45; }
+
+      .toast { right: 12px; bottom: 12px; left: 12px; max-width: none; }
+    }
+    /* Match all department editors while keeping section navigation on the left. */
+    @media (min-width: 1001px) {
+      .app-nav-wrapper {backdrop-filter:none;-webkit-backdrop-filter:none;background:#090514}
+      .tabs-strip {position:fixed;left:0;top:81px;bottom:0;width:250px;padding:26px 14px;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:30px;background:#0d0719;border-right:1px solid var(--border);overflow-y:auto}
+      .tabs {flex-direction:column;gap:8px}
+      .tab {white-space:normal;text-align:left;line-height:1.5;padding:13px 14px;min-height:46px}
+      .tab.active {box-shadow:inset 3px 0 #ff7620}
+      #save-hint {margin-top:auto;line-height:1.7;padding:12px}
+      .topbar {min-height:81px;padding:14px 24px;gap:16px}
+      .shell {margin-left:250px;width:calc(100% - 250px);max-width:none;padding:30px 32px 80px}
+      .brand {flex-wrap:wrap}
+    }
+    .display-controls{display:grid;gap:12px;font-size:11px;color:var(--text-muted);min-width:190px}.display-controls select{font-size:12px}.display-rotate-label{display:flex;align-items:center;gap:8px;line-height:1.5}.display-rotate-label input{width:16px;height:16px}.display-controls small{font-size:10px;color:var(--text-subtle)}
+    .section-switch{display:flex;flex-direction:row;justify-content:space-between;align-items:center;gap:10px;margin:12px 0;font-size:11px;text-transform:none;letter-spacing:0}.section-switch input{appearance:none;width:38px;height:22px;flex:0 0 38px;border-radius:20px;background:#4a4055;position:relative;padding:0;cursor:pointer}.section-switch input:before{content:"";position:absolute;left:3px;top:3px;width:14px;height:14px;border-radius:50%;background:white;transition:transform .15s}.section-switch input:checked{background:#258855}.section-switch input:checked:before{transform:translateX(16px)}.section-switch input:focus-visible{outline:2px solid #ff962e;outline-offset:3px}.switch-value{font-size:9px;min-width:22px}
+    .basic-ed-connection {font-size:12px;color:var(--text-muted);margin:0 0 20px}
+    .basic-award-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+    .basic-award-card {padding:24px;background:var(--surface-1);border:1px solid var(--border);border-radius:var(--radius-md)}
+    .basic-award-card h2 {font-size:18px;min-height:48px}
+    .basic-award-card img {display:block;width:120px;height:120px;object-fit:contain;margin:24px auto}
+    .basic-award-card .winner-placeholder {height:120px;display:grid;place-items:center;margin:24px auto;color:var(--text-subtle);font-size:40px}
+    @media(max-width:1000px){.basic-award-grid{grid-template-columns:1fr}.tabs-strip{overflow-x:auto}.tabs{flex-shrink:0}.topbar{flex-wrap:wrap;gap:12px}}
+    .password-field{position:relative;margin-top:8px}.password-field #login-password{width:100%;padding-right:52px}.login-card #toggle-password{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:40px;height:36px;min-height:0;padding:8px;margin:0;border:0;background:transparent;display:grid;place-items:center;color:var(--text-muted)}.login-card #toggle-password:hover{color:var(--text);background:var(--surface-3)}
+    /* TV controls live in their own workspace, with one distinct navigation entry. */
+    .tab.tv-nav{color:#ffd18a;background:linear-gradient(115deg,#68330f55,#48234d77);border:1px solid #ff9a3655;margin-bottom:14px;letter-spacing:.6px;font-size:12px;gap:10px}
+    .tab.tv-nav svg{flex-shrink:0}
+    .tab.tv-nav:hover,.tab.tv-nav.active{color:#fff1d6;background:linear-gradient(115deg,#9b461877,#65336488);border-color:#ffab59;box-shadow:inset 3px 0 #ff9b35,0 0 18px #ff812014}
+    .tv-info{padding:24px;border:1px solid #f59e0b33;border-radius:14px;background:linear-gradient(110deg,#f59e0b0d,#8b5cf610);margin-bottom:28px}
+    .tv-info>strong{font-size:18px;color:#ffd18a}.tv-info p{font-size:13px;color:var(--text-muted);line-height:1.7;margin:10px 0}.tv-info small{font-size:11px;color:var(--text-subtle)}
+    .tv-controls>strong{letter-spacing:1.5px;color:var(--text-subtle);font-size:10px}.tv-controls #section-switches{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+    .tv-controls .section-switch{margin:0;padding:23px 18px;min-height:82px;border:1px solid var(--border);background:var(--surface-1);border-radius:12px;font-size:13px;line-height:1.4}
+    .tv-controls .section-switch>span:first-child{flex:1}.tv-controls .section-switch:has(input:checked){border-color:#37b88266;background:linear-gradient(110deg,#193b2933,var(--surface-1))}.tv-controls .section-switch:has(input:checked) .switch-value{color:#69dc9c}.tv-controls .section-switch:has(input:disabled){opacity:.55}
+    @media(max-width:1100px){.tv-controls #section-switches{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:700px){.tv-controls #section-switches{grid-template-columns:1fr}.tab.tv-nav{margin-bottom:0;margin-right:10px}.tv-info{padding:18px}}
+    /* Compact, grouped sidebar with a distinct TV control entry. */
+    .nav-masthead{display:flex;align-items:center;justify-content:space-between;padding:0 12px 16px}.nav-kicker{font-size:9px;font-weight:700;letter-spacing:1.8px;color:#8e809f}.nav-edition{font-size:9px;color:#af99c5;border:1px solid #ffffff13;padding:3px 6px;border-radius:5px}
+    .tabs .tab{gap:11px;border:1px solid transparent;border-radius:10px;text-align:left;font-size:12px;font-weight:500;line-height:1.4;transition:background .18s,border-color .18s,color .18s}.tabs .tab>svg{width:18px;height:18px;flex:0 0 18px;color:#8e7ca6}.tabs .nav-text{flex:1}.tabs .tab:hover{background:#ffffff06;color:#e9e2f4}.tabs .tab.active{background:linear-gradient(100deg,#34204c,#251635);border-color:#74538d55;box-shadow:none;color:#fff}.tabs .tab.active>svg{color:#d6b3f6}.nav-group-label{font-size:8px;letter-spacing:1.7px;font-weight:700;color:#766783;padding:18px 12px 7px}.tabs .tab-badge{font-size:9px;background:#ffffff09;color:#9d8bad;min-width:20px;text-align:center;border:1px solid #ffffff0a}.nav-arrow{font-size:17px;opacity:.7}
+    .tabs .tab.tv-nav{background:linear-gradient(115deg,#fc85241c,#c84b3e12);border-color:#f99b3b55;color:#ffcb8c;font-size:11px;font-weight:750;letter-spacing:.5px;min-height:52px;margin-bottom:12px;box-shadow:0 4px 18px #00000015}.tabs .tab.tv-nav>svg{color:#ffad55}.tabs .tab.tv-nav:hover,.tabs .tab.tv-nav.active{background:linear-gradient(115deg,#b15c2b66,#63343866);border-color:#ed9b59;color:#ffe6c5;box-shadow:0 0 20px #ef873014}
+    .tabs-strip{scrollbar-width:thin;scrollbar-color:#473451 transparent}.tabs-strip::-webkit-scrollbar{width:4px;height:4px}.tabs-strip::-webkit-scrollbar-thumb{background:#473451;border-radius:5px}
+    @media(min-width:1001px){.tabs-strip{width:266px;padding:24px 15px 16px;gap:0;background:linear-gradient(170deg,#11091e,#0b0613);border-right:1px solid #ffffff0b}.tabs{gap:3px}.tabs .tab{padding:11px 12px;min-height:43px}.shell{margin-left:266px;width:calc(100% - 266px);padding:32px 34px 80px}#save-hint{border-top:1px solid #ffffff0b;margin-top:auto;padding:17px 12px 0;font-size:9px!important;color:#81718f!important}}
+    @media(max-width:1000px){.nav-masthead,.nav-group-label{display:none}.tabs .tab{white-space:nowrap;flex-shrink:0}.tabs .tab.tv-nav{min-height:40px;margin:0 8px 0 0}.tabs-strip{gap:12px}.tabs .tab>svg{width:16px;height:16px;flex-basis:16px}}
+  </style>
+  <link rel="stylesheet" href="admin-overview.css">
+</head>
+<body>
+
+  <section id="login-screen" class="login-screen">
+    <form id="login-form" class="login-card">
+      <img class="login-logo" src="logo.svg" alt="Southlandfest 2026" />
+      <h1>Admin sign in</h1>
+      <p>Sign in to configure the live scoreboard, matches, and announcements.</p>
+      
+      <div style="display:grid; gap:16px;">
+        <label>Email
+          <input id="login-username" type="email" autocomplete="username" placeholder="you@example.com" required autofocus />
+        </label>
+        <div>
+          <label for="login-password">Password</label>
+          <div class="password-field">
+            <input id="login-password"  type="password" autocomplete="current-password" placeholder="••••••••" required />
+            <button id="toggle-password" class="button" type="button" aria-controls="login-password" aria-label="Show password" aria-pressed="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path id="eye-slash" d="M3 3l18 18" style="display:none"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <button id="login-button" class="button primary" type="submit">Sign in</button>
+      <div id="login-error" class="login-error" role="alert"></div>
+      <div class="login-foot">Southland College Sportsfest 2026 · Authorized access only</div>
+    </form>
+  </section>
+
+  <div id="admin-app" class="hidden">
+    <div class="app-nav-wrapper">
+      <header class="topbar">
+        <div class="brand">
+          <img src="logo.svg" alt="Southlandfest 2026" />
+          <div class="brand-copy">
+            <strong>Sportsfest Control</strong>
+          </div>
+          <div class="status-badge">
+            <span id="status-dot" class="dot ok"></span>
+            <span id="status-text">Connected</span>
+          </div>
+        </div>
+
+        <div class="top-actions">
+          <div id="user-profile" class="user-profile" title="Signed-in administrator">
+            <img id="signed-avatar" class="user-avatar hidden" alt="Administrator profile photo">
+            <span id="signed-avatar-fallback" class="user-avatar-fallback">AD</span>
+            <span class="user-identity"><strong id="signed-user">Administrator</strong><small id="signed-username">admin</small></span>
+          </div>
+          <button class="button ghost small live-view" type="button" onclick="window.open('index.html','_blank')">Live View ↗</button>
+          <button id="logout" class="button ghost small" type="button">Log out</button>
+          <button id="save-top" class="button primary" type="button">Save changes</button>
+        </div>
+      </header>
+
+      <div class="tabs-strip">
+        <div class="nav-masthead"><span class="nav-kicker">CONTROL CENTER</span><span class="nav-edition">2026</span></div><nav class="tabs" aria-label="Admin sections"><button class="tab tv-nav" data-tab="tv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span class="nav-text">SHOWING IN TV</span><span class="nav-arrow">↗</span></button><button class="tab active" data-tab="overview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span class="nav-text">Overview</span></button><div class="nav-group-label">LEADERBOARDS</div><button class="tab " data-tab="senior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2 9 10-5 10 5-10 5-10-5Zm4 2v6c4 3 8 3 12 0v-6M22 9v7"/></svg><span class="nav-text">Senior High School</span></button><button class="tab " data-tab="junior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2 9 10-5 10 5-10 5-10-5Zm4 2v6c4 3 8 3 12 0v-6M22 9v7"/></svg><span class="nav-text">Junior High School</span></button><button class="tab " data-tab="grade"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2 9 10-5 10 5-10 5-10-5Zm4 2v6c4 3 8 3 12 0v-6M22 9v7"/></svg><span class="nav-text">Grade School</span></button><button class="tab " data-tab="leaderboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-6 9 6H3Zm0 12h18M5 11v7m5-7v7m4-7v7m5-7v7"/></svg><span class="nav-text">College</span></button><div class="nav-group-label">EVENT MANAGEMENT</div><button class="tab " data-tab="awards"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3h8v6a4 4 0 0 1-8 0V3Zm0 2H4v3a4 4 0 0 0 4 4m8-7h4v3a4 4 0 0 1-4 4M12 13v5m-4 3h8l-1-3H9l-1 3Z"/></svg><span class="nav-text">Results & Major Awards</span></button><button class="tab " data-tab="matches"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 11h18m-13 4h2m4 0h2m-8 3h2"/></svg><span class="nav-text">Matches</span><span id="badge-matches" class="tab-badge">0</span></button><button class="tab " data-tab="matches2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 11h18m-13 4h2m4 0h2m-8 3h2"/></svg><span class="nav-text">Matches</span></button><button class="tab " data-tab="announcements"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 15-6v16L3 14v-4Zm4 5 2 6h3l-2-5M21 9v6"/></svg><span class="nav-text">Announcements</span><span id="badge-announcements" class="tab-badge">0</span></button></nav>
+        <span id="save-hint" style="font-size: 11px; color: var(--text-subtle);">All changes saved</span>
+      </div>
+    </div>
+
+    <main class="shell">
+      <section id="panel-tv" class="panel">
+        <div class="panel-head"><div><h1>SHOWING IN TV</h1><p>Choose which sections appear on the public screen.</p></div><a class="button" href="index.html" target="_blank" rel="noopener">Open TV display ↗</a></div>
+        <div class="tv-info"><strong>You control the screen.</strong><p>Turn sections ON to include them in the rotation, or OFF to hide them. Click <strong>Save changes</strong> to publish your selection.</p><small>Changes appear within 30 seconds. If every section is OFF, the TV shows a standby screen.</small></div>
+        <div class="display-controls tv-controls"><strong>SCREEN ROTATION</strong><div id="section-switches"></div><small>Enabled sections play in the order shown above, left to right.</small></div>
+      </section>
+      <section id="panel-overview" class="panel active">
+        <div class="panel-head">
+          <div>
+            <h1>Event overview</h1>
+            <p>Department standings, recent updates, and today's schedule.</p>
+          </div>
+        </div>
+        <div id="overview-cards" class="cards"></div>
+        <div id="overview-details"></div>
+      </section>
+
+      <section id="panel-leaderboard" class="panel">
+        <div class="panel-head">
+          <div>
+            <h1>Leaderboard standings</h1>
+            <p>Manage scores with quick steppers. Standings auto-calculate highest to lowest.</p>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 60px;">Rank</th>
+                <th>Department</th>
+                <th>Tally Score</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-editor"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="panel-grade" class="panel basic-admin-panel"><div class="panel-head"><div><h1>Grade School Department</h1><p>Manage scores with quick steppers. Standings rank highest to lowest; equal scores share a rank.</p></div><a class="button" href="index.html" target="_blank" rel="noopener">Live leaderboard ↗</a></div><p class="basic-ed-connection"></p><div id="basic-admin-grade"></div></section>
+      <section id="panel-junior" class="panel basic-admin-panel"><div class="panel-head"><div><h1>Junior High School Department</h1><p>Manage scores with quick steppers. Standings rank highest to lowest; equal scores share a rank.</p></div><a class="button" href="index.html" target="_blank" rel="noopener">Live leaderboard ↗</a></div><p class="basic-ed-connection"></p><div id="basic-admin-junior"></div></section>
+      <section id="panel-senior" class="panel basic-admin-panel"><div class="panel-head"><div><h1>Senior High School Department</h1><p>Manage scores with quick steppers. Standings rank highest to lowest; equal scores share a rank.</p></div><a class="button" href="index.html" target="_blank" rel="noopener">Live leaderboard ↗</a></div><p class="basic-ed-connection"></p><div id="basic-admin-senior"></div></section>
+      <section id="panel-awards" class="panel basic-admin-panel"><div class="panel-head"><div><h1>Special Events & Major Awards</h1><p>Select the winning team for each major competition.</p></div><a class="button" href="index.html" target="_blank" rel="noopener">Live leaderboard ↗</a></div><p class="basic-ed-connection"></p><div id="basic-admin-awards"></div></section>
+
+      <section id="panel-matches" class="panel">
+        <div class="panel-head">
+          <div>
+            <h1>Matches</h1>
+            <p>Define match schedules, competitive matchups, and locations.</p>
+          </div>
+          <button class="button primary" data-add="match">+ Add match</button>
+        </div>
+        <div id="matches-editor" class="editor-list"></div>
+      </section>
+
+<section id="panel-matches2" class="panel"><div class="panel-head"><div><h1>Matches</h1><p>A separate fixture list for the second matches screen.</p></div><button class="button primary" data-add="match2">+ Add match</button></div><div id="matches2-editor" class="editor-list"></div></section>
+      <section id="panel-announcements" class="panel">
+        <div class="panel-head">
+          <div>
+            <h1>Scrolling marquee</h1>
+            <p>Configure notifications and real-time alerts running on ticker ribbons.</p>
+          </div>
+          <button class="button primary" data-add="announcement">+ Add announcement</button>
+        </div>
+
+        <div class="ticker-preview-wrapper">
+          <span class="ticker-tag">Live Preview</span>
+          <div class="ticker-viewport" id="ticker-preview-text">No announcements running.</div>
+        </div>
+
+        <div id="announcements-editor" class="editor-list"></div>
+      </section>
+
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status"></div>
+
+  <script src="basic-ed-data.js"></script>
+  <script src="basic-ed-admin.js"></script>
+  <script src="config.js?v=20260907-supabase"></script>
+  <script src="supabase-client.js"></script>
+  <script src="admin-safety.js"></script>
+  <script src="admin-overview.js"></script>
+  <script src="export-assets.js"></script>
+  <script src="admin-export.js"></script>
+  <script>
+    const TEAMS = {
+      SECSA:{ team:'Shippuden', logo:'DEPT LOGOS/SECSA Shippuden.png' },
+      SBA:{ team:'Surging Dragons', logo:'DEPT LOGOS/SBA Surging Dragons.png' },
+      STED:{ team:'Golden Hawks', logo:'DEPT LOGOS/STED Golden Hawks.png' },
+      SHTM:{ team:'Pink Panthers', logo:'DEPT LOGOS/SHTM Pink Panthers.png' },
+      SHARP:{ team:'Celadons Hawks', logo:'DEPT LOGOS/SHARP Celadons Hawks.png' }
+    };
+    const TEAM_CODES = Object.keys(TEAMS);
+    let dashboardData = {
+      leaderboard: TEAM_CODES.map(dept => ({ dept, points:0 })),
+      matches: [], matches2: [], announcements: [], media: [], updatedAt:'', updatedBy:''
+    };
+    let connected = false;
+    let dirty = false;
+    let sessionToken = window.SportsfestAPI.hasSession() ? 'supabase' : '';
+    sessionStorage.removeItem('sportsfestAdminSession');
+    let currentUsername = '';
+    let currentUser = null;
+
+    const $ = selector => document.querySelector(selector);
+    const $$ = selector => [...document.querySelectorAll(selector)];
+    const escapeHtml = (value = '') => String(value).replace(/[&<>'"]/g, character => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+    })[character]);
+    const localDate = () => {
+      const date = new Date();
+      date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+      return date.toISOString().slice(0, 10);
+    };
+    const formatUpdated = value => value
+      ? new Date(value).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })
+      : 'Not saved yet';
+    const teamOptions = selected => TEAM_CODES.map(code =>
+      `<option value="${code}" ${code === selected ? 'selected' : ''}>${code} · ${TEAMS[code].team}</option>`
+    ).join('');
+
+    const originalTeamOptions = teamOptions;
+    function fixtureTeamOptions(selected) {
+      return originalTeamOptions(selected) + Object.values(departments).filter(dept => dept.teams.length).map(dept => '<optgroup label="' + escapeHtml(dept.short) + '">' + dept.teams.map(team => '<option value="' + team.id.toUpperCase() + '" ' + (selected === team.id.toUpperCase() ? 'selected' : '') + '>' + escapeHtml(team.name) + '</option>').join('') + '</optgroup>').join('');
+    }
+    function setStatus(message, mode = '') {
+      $('#status-text').textContent = message;
+      $('#status-dot').className = `dot ${mode}`;
+    }
+
+    function toast(message, isError = false) {
+      const element = $('#toast');
+      element.textContent = message;
+      element.className = `toast show ${isError ? 'error' : ''}`;
+      clearTimeout(toast.timer);
+      toast.timer = setTimeout(() => { element.className = 'toast'; }, 3500);
+    }
+
+    function setDirty(value = true) {
+      dirty = value;
+      $('#save-hint').textContent = dirty
+        ? 'You have unsaved changes'
+        : `Saved · ${formatUpdated(dashboardData.updatedAt)}`;
+    }
+
+    function updateBadges() {
+      $('#badge-matches').textContent = dashboardData.matches.filter(item => item.active !== false).length;
+      $('#badge-announcements').textContent = dashboardData.announcements.filter(item => item.active !== false).length;
+    }
+
+    function renderOverview() {
+      const activeMatches = [...dashboardData.matches, ...(dashboardData.matches2 || [])].filter(item => item.active !== false).length;
+      const activeAnnouncements = dashboardData.announcements.filter(item => item.active !== false).length;
+      $('#overview-cards').innerHTML = `
+        <article class="metric"><span>Teams · all departments</span><strong>${TEAM_CODES.length + Object.values(departments).reduce((count, department) => count + department.teams.length, 0)}</strong></article>
+        <article class="metric"><span>Active matches</span><strong>${activeMatches}</strong></article>
+        <article class="metric"><span>Active announcements</span><strong>${activeAnnouncements}</strong></article>
+        <article class="metric"><span>Last content update</span><strong class="time">${escapeHtml(formatUpdated(dashboardData.updatedAt))}${dashboardData.updatedBy ? `<br><small>by ${escapeHtml(dashboardData.updatedBy)}</small>` : ''}</strong></article>`;
+      updateBadges();
+      renderOverviewDetails();
+    }
+
+    function renderLeaderboard() {
+      const byDepartment = Object.fromEntries(dashboardData.leaderboard.map(row => [row.dept, row]));
+      const ranking = TEAM_CODES
+        .map(dept => ({ dept, points: Number(byDepartment[dept]?.points) || 0 }))
+        .sort((a, b) => b.points - a.points || TEAM_CODES.indexOf(a.dept) - TEAM_CODES.indexOf(b.dept));
+
+      $('#leaderboard-editor').innerHTML = TEAM_CODES.map(dept => {
+        const index = ranking.findIndex(row => row.dept === dept);
+        const row = ranking[index];
+        const team = TEAMS[row.dept];
+        return `<tr data-leader-dept="${row.dept}">
+          <td><span class="rank-indicator">${index + 1}</span></td>
+          <td><div class="team-cell"><img src="${encodeURI(team.logo)}" alt=""><div><strong>${escapeHtml(team.team)}</strong><span>${row.dept}</span></div></div></td>
+          <td><div class="points-controller">
+            <button class="points-btn" type="button" data-points-step="-1" aria-label="Subtract one point">−</button>
+            <input class="points-input" type="number" min="0" step="1" value="${row.points}" aria-label="${row.dept} points">
+            <button class="points-btn" type="button" data-points-step="1" aria-label="Add one point">+</button>
+          </div></td>
+        </tr>`;
+      }).join('');
+    }
+
+    function renderMatches() { renderMatchCollection('matches'); renderMatchCollection('matches2'); }
+    function renderMatchCollection(collection) {
+      $('#' + (collection === 'matches' ? 'matches-editor' : 'matches2-editor')).innerHTML = (dashboardData[collection] || []).length
+        ? (dashboardData[collection] || []).map((match, index) => `<article class="match-fixture-card match-row" data-collection="${collection}" data-index="${index}">
+            <div class="fixture-teams">
+              <label>Team A<select class="m-team-a">${fixtureTeamOptions(match.teamA)}</select></label>
+              <span class="vs-separator">versus</span>
+              <label>Team B<select class="m-team-b">${fixtureTeamOptions(match.teamB)}</select></label>
+            </div>
+            <div class="fixture-details">
+              <label>Date<input class="m-date" type="date" value="${escapeHtml(match.date || localDate())}"></label>
+              <label>Time<input class="m-time" value="${escapeHtml(match.time || '')}" placeholder="2:00 PM"></label>
+              <label>Sport<input class="m-sport" value="${escapeHtml(match.sport || '')}" placeholder="Basketball · Men"></label>
+              <label>Venue<input class="m-venue" value="${escapeHtml(match.venue || '')}" placeholder="Main Gym"></label>
+            </div>
+            <div class="fixture-status">
+              <label>Status<select class="m-status">${['Scheduled', 'Upcoming', 'Up Next', 'In Progress', 'Completed'].map(status => `<option ${status === (match.status || 'Scheduled') ? 'selected' : ''}>${status}</option>`).join('')}</select></label>
+              <label class="active-toggle"><input class="m-active" type="checkbox" ${match.active !== false ? 'checked' : ''}> Show on TV</label>
+            </div>
+            <div class="fixture-actions"><button class="button danger small" data-remove="${collection === 'matches' ? 'match' : 'match2'}" data-index="${index}" type="button">Remove</button></div>
+          </article>`).join('')
+        : '<div class="empty">No matches yet. Add a match to begin.</div>';
+      updateBadges();
+    }
+
+    function renderAnnouncements() {
+      $('#announcements-editor').innerHTML = dashboardData.announcements.length
+        ? dashboardData.announcements.map((announcement, index) => `<article class="match-fixture-card announcement-row" data-index="${index}" style="grid-template-columns:minmax(0,1fr) 130px 90px">
+            <label>Announcement<textarea class="a-message" placeholder="Enter the complete scrolling announcement">${escapeHtml(announcement.message || '')}</textarea></label>
+            <label class="active-toggle"><input class="a-active" type="checkbox" ${announcement.active !== false ? 'checked' : ''}> Show on TV</label>
+            <div class="fixture-actions"><button class="button danger small" data-remove="announcement" data-index="${index}" type="button">Remove</button></div>
+          </article>`).join('')
+        : '<div class="empty">No announcements yet. Add one to begin.</div>';
+      const activeMessages = dashboardData.announcements
+        .filter(item => item.active !== false && String(item.message || '').trim())
+        .map(item => item.message.trim());
+      $('#ticker-preview-text').textContent = activeMessages.length ? activeMessages.join('   •   ') : 'No announcements running.';
+      updateBadges();
+    }
+
+    function updateTickerPreviewFromForm() {
+      const activeMessages = $$('.announcement-row').filter(row =>
+        row.querySelector('.a-active').checked && row.querySelector('.a-message').value.trim()
+      ).map(row => row.querySelector('.a-message').value.trim());
+      $('#ticker-preview-text').textContent = activeMessages.length
+        ? activeMessages.join('   •   ')
+        : 'No announcements running.';
+    }
+
+    function renderAll() {
+      renderOverview();
+      renderLeaderboard();
+      renderBasicEdAdmin(dashboardData);
+      $('#section-switches').replaceChildren();
+      DISPLAY_SECTIONS.forEach(section => {
+        const label = document.createElement('label'); label.className = 'section-switch';
+        const name = document.createElement('span'); name.textContent = section.label;
+        const input = document.createElement('input'); input.type = 'checkbox'; input.setAttribute('role','switch'); input.dataset.screenSection = section.id;
+        input.checked = dashboardData.displaySettings?.sections?.[section.id] ?? section.enabled;
+        input.disabled = !dashboardData.displaySettings?.sections;
+        const status = document.createElement('span'); status.className = 'switch-value'; status.textContent = input.checked ? 'ON' : 'OFF';
+        input.addEventListener('change', () => { status.textContent = input.checked ? 'ON' : 'OFF'; setDirty(true); });
+        label.append(name, input, status); $('#section-switches').append(label);
+      });
+      renderMatches();
+      renderAnnouncements();
+      setDirty(false);
+    }
+
+    function collectData() {
+      dashboardData.leaderboard = $$('[data-leader-dept]').map(row => ({
+        dept: row.dataset.leaderDept,
+        points: Math.max(0, Number(row.querySelector('.points-input').value) || 0)
+      }));
+      dashboardData.matches = $$('.match-row[data-collection="matches"]').map(row => ({
+        date: row.querySelector('.m-date').value,
+        sport: row.querySelector('.m-sport').value.trim(),
+        teamA: row.querySelector('.m-team-a').value,
+        teamB: row.querySelector('.m-team-b').value,
+        time: row.querySelector('.m-time').value.trim(),
+        venue: row.querySelector('.m-venue').value.trim(),
+        status: row.querySelector('.m-status').value,
+        active: row.querySelector('.m-active').checked
+      }));
+      dashboardData.matches2 = $$('.match-row[data-collection="matches2"]').map(row => ({
+        date: row.querySelector('.m-date').value,
+        sport: row.querySelector('.m-sport').value.trim(),
+        teamA: row.querySelector('.m-team-a').value,
+        teamB: row.querySelector('.m-team-b').value,
+        time: row.querySelector('.m-time').value.trim(),
+        venue: row.querySelector('.m-venue').value.trim(),
+        status: row.querySelector('.m-status').value,
+        active: row.querySelector('.m-active').checked
+      }));
+      dashboardData.announcements = $$('.announcement-row').map(row => ({
+        message: row.querySelector('.a-message').value.trim(),
+        active: row.querySelector('.a-active').checked
+      }));
+      Object.assign(dashboardData, collectBasicEdAdmin());
+      if (dashboardData.displaySettings?.sections) dashboardData.displaySettings = { sections: Object.fromEntries($$('[data-screen-section]').map(input => [input.dataset.screenSection, input.checked])) };
+      return dashboardData;
+    }
+
+    async function apiRequest(action, data, credentials = {}) {
+      return window.SportsfestAPI.admin(action, data, credentials);
+    }
+
+    function showLogin(message = '') {
+      connected = false;
+      currentUsername = '';
+      currentUser = null;
+      $('#admin-app').classList.add('hidden');
+      $('#login-screen').classList.remove('hidden');
+      $('#login-error').textContent = message;
+      $('#login-password').value = '';
+      $('#login-password').type = 'password';
+      $('#eye-slash').style.display = 'none';
+      $('#toggle-password').setAttribute('aria-label', 'Show password');
+      $('#toggle-password').setAttribute('aria-pressed', 'false');
+      requestAnimationFrame(() => $('#login-username').focus());
+    }
+
+    function renderSignedUser(profile) {
+      const displayName = profile.displayName || profile.username || 'Administrator';
+      const username = profile.username || 'admin';
+      const initials = displayName.split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join('').toUpperCase() || 'AD';
+      const avatar = $('#signed-avatar');
+      const fallback = $('#signed-avatar-fallback');
+      $('#signed-user').textContent = displayName;
+      $('#signed-username').textContent = username;
+      fallback.textContent = initials;
+      avatar.onerror = () => {
+        avatar.classList.add('hidden');
+        fallback.classList.remove('hidden');
+      };
+      if (profile.photoUrl) {
+        avatar.src = profile.photoUrl;
+        avatar.classList.remove('hidden');
+        fallback.classList.add('hidden');
+      } else {
+        avatar.removeAttribute('src');
+        avatar.classList.add('hidden');
+        fallback.classList.remove('hidden');
+      }
+    }
+
+    function showDashboard(payload) {
+      dashboardData = { ...dashboardData, ...payload.data };
+      connected = true;
+      currentUser = payload.user || {
+        username: payload.username || dashboardData.updatedBy || 'admin',
+        displayName: payload.username || dashboardData.updatedBy || 'Administrator',
+        photoUrl: ''
+      };
+      currentUsername = currentUser.username;
+      renderSignedUser(currentUser);
+      $('#login-screen').classList.add('hidden');
+      $('#admin-app').classList.remove('hidden');
+      renderAll();
+      safetyDashboard(payload);
+      setStatus(`Connected · last update ${formatUpdated(dashboardData.updatedAt)}`, 'ok');
+    }
+
+    async function signIn(event) {
+      event.preventDefault();
+      const username = $('#login-username').value.trim();
+      const password = $('#login-password').value;
+      const button = $('#login-button');
+      button.disabled = true;
+      button.textContent = 'Signing in…';
+      $('#login-error').textContent = '';
+      try {
+        const payload = await apiRequest('login', null, { username, password });
+        sessionToken = payload.sessionToken;
+
+        showDashboard(payload);
+        toast(`Welcome, ${payload.user?.displayName || payload.username}.`);
+      } catch (error) {
+        showLogin(error.message);
+      } finally {
+        button.disabled = false;
+        button.textContent = 'Sign in';
+      }
+    }
+
+    async function restoreSession() {
+      if (!sessionToken) {
+        showLogin();
+        return;
+      }
+      $('#login-error').textContent = 'Restoring your session…';
+      try {
+        const payload = await apiRequest('loadAdmin');
+        showDashboard(payload);
+      } catch (error) {
+        sessionToken = '';
+        sessionStorage.removeItem('sportsfestAdminSession');
+        showLogin(error.message);
+      }
+    }
+
+    async function logOut() {
+      if (dirty && !confirm('You have unsaved changes. Log out anyway?')) return;
+      try {
+        if (sessionToken) await apiRequest('logout');
+      } catch (_) {}
+      sessionToken = '';
+      sessionStorage.removeItem('sportsfestAdminSession');
+      dirty = false;
+      showLogin('You have been logged out.');
+    }
+
+    async function saveAll() { return safetySave(); }
+
+    $$('.tab').forEach(button => button.addEventListener('click', () => {
+      $$('.tab').forEach(item => item.classList.toggle('active', item === button));
+      $$('.panel').forEach(panel => panel.classList.toggle('active', panel.id === `panel-${button.dataset.tab}`));
+      $$('.tab').forEach(item => { if (item === button) item.setAttribute('aria-current', 'page'); else item.removeAttribute('aria-current'); });
+    }));
+
+    document.addEventListener('input', event => {
+      if (event.target.closest('.panel') && event.target.matches('input,select,textarea')) {
+        setDirty(true);
+        if (event.target.classList.contains('a-message')) {
+          updateTickerPreviewFromForm();
+        }
+      }
+    });
+    document.addEventListener('change', event => {
+      if (event.target.closest('.panel') && event.target.matches('input,select,textarea')) {
+        setDirty(true);
+        if (event.target.dataset.basicTeam && event.target.checkValidity()) updateBasicRanks(event.target.closest('tbody'));
+        if (event.target.classList.contains('a-active')) {
+          updateTickerPreviewFromForm();
+        }
+      }
+    });
+    document.addEventListener('click', event => {
+      const pointsButton = event.target.closest('[data-points-step]');
+      if (pointsButton) {
+        const input = pointsButton.parentElement.querySelector('.points-input');
+        input.value = Math.min(Number(input.max) || Infinity, Math.max(0, (Number(input.value) || 0) + Number(pointsButton.dataset.pointsStep)));
+        if (input.dataset.basicTeam) updateBasicRanks(input.closest('tbody'));
+        setDirty(true);
+        return;
+      }
+
+      const addButton = event.target.closest('[data-add]');
+      if (addButton) {
+        collectData();
+        if (addButton.dataset.add === 'match2') dashboardData.matches2.push({ date: localDate(), sport: '', teamA: 'SECSA', teamB: 'SBA', time: '', venue: '', status: 'Scheduled', active: true });
+        if (addButton.dataset.add === 'match') dashboardData.matches.push({ date: localDate(), sport: '', teamA: 'SECSA', teamB: 'SBA', time: '', venue: '', status: 'Scheduled', active: true });
+        if (addButton.dataset.add === 'announcement') dashboardData.announcements.push({ message: '', active: true });
+        renderMatches();
+        renderAnnouncements();
+        setDirty(true);
+        return;
+      }
+
+      const removeButton = event.target.closest('[data-remove]');
+      if (removeButton) {
+        collectData();
+        const collection = removeButton.dataset.remove === 'match'
+          ? 'matches'
+          : removeButton.dataset.remove === 'match2' ? 'matches2' : 'announcements';
+        dashboardData[collection].splice(Number(removeButton.dataset.index), 1);
+        renderMatches();
+        renderAnnouncements();
+        setDirty(true);
+      }
+    });
+
+    $('#toggle-password').addEventListener('click', () => {
+      const password = $('#login-password');
+      const show = password.type === 'password';
+      password.type = show ? 'text' : 'password';
+      $('#eye-slash').style.display = show ? '' : 'none';
+      $('#toggle-password').setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+      $('#toggle-password').setAttribute('aria-pressed', String(show));
+      password.focus();
+    });
+    $('#login-form').addEventListener('submit', signIn);
+    $('#logout').addEventListener('click', logOut);
+    $('#save-top').addEventListener('click', saveAll);
+    window.addEventListener('beforeunload', event => {
+      if (dirty) {
+        event.preventDefault();
+        event.returnValue = '';
+      }
+    });
+
+    renderAll();
+    restoreSession();
+  </script>
+</body>
+</html>

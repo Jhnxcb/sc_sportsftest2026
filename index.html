@@ -1,0 +1,1131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#120824" />
+  <title>Southland College Sportsfest 2026</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-dark: #0f071d;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --card-border-active: rgba(255, 255, 255, 0.2);
+      --gold-accent: #f5c042;
+      --ticker-cycle: 20s;
+      --view-cycle: 30s;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; }
+
+    body {
+      margin: 0;
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", sans-serif;
+      background: var(--bg-dark);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* Ambient Apple-style subtle mesh lighting */
+    .ambient-canvas {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .glow-orb-1 {
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      top: -200px;
+      left: -100px;
+      background: radial-gradient(circle, rgba(126, 45, 209, 0.35) 0%, transparent 65%);
+      filter: blur(80px);
+    }
+    .glow-orb-2 {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      bottom: -150px;
+      right: -100px;
+      background: radial-gradient(circle, rgba(239, 121, 40, 0.25) 0%, transparent 70%);
+      filter: blur(90px);
+    }
+
+    .display-shell {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-rows: 110px minmax(0, 1fr) 76px;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    /* Glass Panels */
+    .glass-nav {
+      background: rgba(22, 11, 38, 0.65);
+      border-bottom: 1px solid var(--card-border);
+      backdrop-filter: blur(35px) saturate(180%);
+      -webkit-backdrop-filter: blur(35px) saturate(180%);
+    }
+
+    .glass-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      backdrop-filter: blur(30px) saturate(160%);
+      -webkit-backdrop-filter: blur(30px) saturate(160%);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Brand Logo / Fallback */
+    .emblem {
+      width: 58px;
+      height: 58px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+    .emblem img { width: 100%; height: 100%; object-fit: contain; }
+    .emblem-fallback { font-size: 20px; font-weight: 800; color: #fff; letter-spacing: -0.03em; }
+    .brand-logo {
+      display: block;
+      width: 172px;
+      height: 96px;
+      object-fit: contain;
+      object-position: left center;
+      position: relative;
+      z-index: 2;
+      transform: translateY(-24px) scale(1.4);
+      transform-origin: left top;
+    }
+
+    /* Pill Badges */
+    .apple-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.85);
+    }
+    #last-received {
+      display: none;
+      flex: 0 0 auto;
+      width: 100%;
+      white-space: nowrap;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+      font-size: 10px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0;
+      color: rgba(255, 255, 255, 0.45);
+    }
+    .admin-sync-badge { gap: 8px; flex-wrap: wrap; justify-content: center; }
+    .admin-sync-heading { display: inline-flex; align-items: center; gap: 6px; }
+    .sync-divider { width: 1px; height: 12px; background: rgba(255,255,255,.18); }
+    .theme-pill {
+      background: rgba(245, 192, 66, 0.12);
+      border-color: rgba(245, 192, 66, 0.3);
+      color: #ffd269;
+    }
+
+    /* Live Pulse Indicator */
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #34c759;
+      box-shadow: 0 0 10px rgba(52, 199, 89, 0.8);
+    }
+    .status-dot.offline {
+      background: #ff9500;
+      box-shadow: 0 0 10px rgba(255, 149, 0, 0.8);
+    }
+
+    /* Main Stage Slide Transition */
+    .main-stage {
+      position: relative;
+      width: min(1440px, 94vw);
+      margin: 0 auto;
+      height: 100%;
+      min-height: 0;
+    }
+    .sequence-view {
+      position: absolute;
+      inset: 20px 0 16px;
+      opacity: 0;
+      transform: scale(0.985) translateY(8px);
+      pointer-events: none;
+      transition: all 500ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .sequence-view.active {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      pointer-events: auto;
+    }
+
+    /* Leaderboard Component */
+    #leaderboard {
+      min-height: 0;
+      justify-content: center;
+      gap: 8px;
+    }
+    .leader-row {
+      position: relative;
+      display: grid;
+      grid-template-columns: 64px minmax(260px, 0.9fr) minmax(180px, 1.25fr) 160px;
+      align-items: center;
+      gap: 20px;
+      padding: 11px 28px;
+      margin-bottom: 0;
+      flex-shrink: 0;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(20px);
+      overflow: hidden;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .sequence-view.active .leader-row {
+      animation: leaderRowIn 720ms cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-delay: var(--delay, 0ms);
+    }
+    @keyframes leaderRowIn {
+      0% { opacity: 0; transform: translateX(-52px) scale(0.97); }
+      65% { opacity: 1; transform: translateX(7px) scale(1.01); }
+      100% { opacity: 1; transform: translateX(0) scale(1); }
+    }
+    .leader-row.place-1 {
+      background: linear-gradient(90deg, rgba(245, 192, 66, 0.12), rgba(255, 255, 255, 0.03));
+      border-color: rgba(245, 192, 66, 0.4);
+    }
+    .leader-row.place-1::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(110deg, transparent 25%, rgba(255,255,255,.13) 45%, transparent 65%);
+      transform: translateX(-120%);
+      animation: leaderShine 3.6s ease-in-out infinite;
+      animation-delay: 1.2s;
+    }
+    @keyframes leaderShine {
+      0%, 55% { transform: translateX(-120%); }
+      85%, 100% { transform: translateX(120%); }
+    }
+
+    .leader-logo {
+      width: 58px;
+      height: 58px;
+      flex: 0 0 58px;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 12px rgba(0,0,0,.32));
+    }
+    .sequence-view.active .leader-logo {
+      animation: leaderLogoPop 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-delay: calc(var(--delay, 0ms) + 170ms);
+    }
+    @keyframes leaderLogoPop {
+      from { opacity: 0; transform: scale(.55) rotate(-8deg); }
+      to { opacity: 1; transform: scale(1) rotate(0); }
+    }
+    .leader-points { animation: pointsGlow 2.4s ease-in-out infinite; }
+    @keyframes pointsGlow {
+      0%, 100% { text-shadow: 0 0 0 rgba(245,192,66,0); }
+      50% { text-shadow: 0 0 18px rgba(245,192,66,.28); }
+    }
+    .leader-bar-cell { min-width: 0; }
+    .leader-bar-track {
+      position: relative;
+      width: 100%;
+      height: 10px;
+      overflow: hidden;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.35);
+    }
+    .leader-bar-fill {
+      position: relative;
+      display: block;
+      width: var(--bar-width, 0%);
+      height: 100%;
+      overflow: hidden;
+      border-radius: inherit;
+      background: var(--team-color, #f5c042);
+      box-shadow: 0 0 18px var(--team-color, #f5c042);
+      transform: scaleX(0);
+      transform-origin: left center;
+    }
+    .leader-bar-fill::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.68), transparent);
+      transform: translateX(-100%);
+      animation: leaderBarShimmer 2.8s ease-in-out infinite;
+      animation-delay: calc(var(--delay, 0ms) + 1.2s);
+    }
+    .sequence-view.active .leader-bar-fill {
+      animation: leaderBarGrow 1.55s cubic-bezier(.16, 1, .3, 1) both;
+      animation-delay: calc(var(--delay, 0ms) + 220ms);
+    }
+    @keyframes leaderBarGrow {
+      from { transform: scaleX(0); }
+      to { transform: scaleX(1); }
+    }
+    @keyframes leaderBarShimmer {
+      0%, 55% { transform: translateX(-100%); }
+      90%, 100% { transform: translateX(100%); }
+    }
+
+    /* Schedule / Match Cards */
+    .matches-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 16px;
+      height: 100%;
+      min-height: 0;
+    }
+    .match-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 30px 34px;
+    }
+    .match-status { padding: 7px 14px; font-size: 14px; }
+    .match-card .match-sport { font-size: 26px; line-height: 1.2; color: #fff; }
+    .match-card .match-details { font-size: 22px; line-height: 1.25; font-weight: 600; color: rgba(255,255,255,.92); gap: 16px; }
+    .match-details > span:first-child { min-width: 0; overflow-wrap: anywhere; }
+    .match-details > span:last-child { flex-shrink: 0; }
+
+    /* Media View */
+    .media-card {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 28px;
+      overflow: hidden;
+      border: 1px solid var(--card-border);
+      background: rgba(0, 0, 0, 0.4);
+    }
+    .media-card video {
+      width: 100%; height: 100%; object-fit: cover;
+      pointer-events: none;
+    }
+    /* Signage playback: suppress native TV/browser transport controls. */
+    .media-card video::-webkit-media-controls { display: none !important; }
+    .media-card video::-webkit-media-controls-enclosure { display: none !important; }
+    .media-card video::-webkit-media-controls-panel { display: none !important; }
+    .media-card video::-webkit-media-controls-start-playback-button { display: none !important; }
+    .display-shell.video-mode { cursor: none; }
+    .media-card video.signage-video-decoder {
+      position: absolute; width: 1px; height: 1px; opacity: 0;
+      top: 0; left: 0; pointer-events: none;
+    }
+    .signage-video-canvas { display: block; width: 100%; height: 100%; background: #000; pointer-events: none; }
+    .media-overlay {
+      position: absolute;
+      inset: 0;
+      padding: 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      background: linear-gradient(0deg, rgba(10, 5, 20, 0.9) 0%, rgba(10, 5, 20, 0.2) 60%, transparent 100%);
+    }
+
+    /* Video scenes fill the screen; only the ticker remains over the footage. */
+    .display-shell.video-mode header { display: none; }
+    .display-shell.video-mode .main-stage {
+      position: absolute;
+      inset: 0;
+      width: 100vw;
+      height: 100dvh;
+      max-width: none;
+      margin: 0;
+    }
+    .display-shell.video-mode .sequence-view { inset: 0; }
+    .display-shell.video-mode .media-card {
+      border: 0;
+      border-radius: 0;
+      background: #000;
+    }
+    .display-shell.video-mode .media-overlay { display: none; }
+    .display-shell.video-mode footer {
+      position: absolute;
+      z-index: 20;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 76px;
+      padding: 0;
+      border: 0;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      background: linear-gradient(0deg, rgba(8, 3, 15, 0.92), rgba(8, 3, 15, 0.3));
+    }
+    .display-shell.video-mode .progress-rail,
+    .display-shell.video-mode .ticker-label,
+    .display-shell.video-mode .slide-status { display: none; }
+    .display-shell.video-mode .ticker-track {
+      display: block;
+      flex: 1 1 100%;
+      width: 100%;
+      min-width: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    .display-shell.video-mode .ticker-track > div { width: 100%; overflow: hidden; }
+    .display-shell.video-mode .ticker-marquee {
+      color: #ffffff;
+      font-size: clamp(15px, 1.25vw, 22px);
+      font-weight: 600;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.95);
+    }
+
+    /* Footer & Ticker */
+    .progress-rail {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+    .progress-bar {
+      height: 100%;
+      background: #f5c042;
+      transform-origin: left;
+      animation: tickerProgress var(--view-cycle) linear both;
+    }
+    @keyframes tickerProgress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+    .ticker-marquee {
+      display: inline-block;
+      position: relative;
+      left: 100%;
+      width: max-content;
+      padding-left: 0;
+      white-space: nowrap;
+      will-change: transform;
+      animation: marquee var(--ticker-cycle) linear both;
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(calc(-100% - 100vw)); }
+    }
+    .ticker-marquee.refresh { animation: none; opacity: 0; }
+
+    .slide-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.25);
+      transition: all 300ms ease;
+    }
+    .slide-dot.active {
+      width: 18px;
+      background: #ffffff;
+    }
+
+    @media (max-width: 900px) {
+      .matches-grid { grid-template-columns: 1fr; grid-template-rows: repeat(4, 1fr); }
+      .leader-row {
+        grid-template-columns: 56px minmax(0, 1fr) 110px;
+        row-gap: 7px;
+        padding: 12px 18px;
+      }
+      .leader-bar-cell { grid-column: 2 / 4; }
+    }
+
+    /* Short TV viewports need a slimmer top banner. The logo remains visually
+       prominent, but the banner gives more usable height back to the results. */
+    @media (max-height: 800px) {
+      .display-shell { grid-template-rows: 82px minmax(0, 1fr) 76px; }
+      .brand-logo {
+        width: 172px;
+        height: 78px;
+        transform: translateY(-18px) scale(1.25);
+      }
+    }
+
+    /* TV browsers often keep their own toolbar, leaving less vertical space than
+       the panel resolution suggests. Compact only the content so every result
+       remains above the ticker while the top banner keeps its original size. */
+    @media (max-height: 700px) {
+      .sequence-view { inset: 10px 0; }
+
+      #view-leaderboard > div > div:first-child,
+      #view-matches > div > div:first-child { padding-bottom: 6px; }
+
+      #view-leaderboard h2 { font-size: 1.5rem; line-height: 1.15; }
+      #view-matches h2 { font-size: 2rem; line-height: 1.1; }
+      #view-matches > div > div:first-child > div > span { font-size: .75rem; }
+
+      #leaderboard { gap: 8px; }
+      .leader-row {
+        grid-template-columns: 52px minmax(220px, .9fr) minmax(150px, 1.2fr) 130px;
+        gap: 14px;
+        min-height: 0;
+        padding: 4px 20px;
+        margin-bottom: 0;
+        border-radius: 16px;
+      }
+      .leader-row:last-child { margin-bottom: 0; }
+      .leader-logo { width: 42px; height: 42px; flex-basis: 42px; }
+      .leader-row h3 { font-size: 1.05rem; line-height: 1.15; }
+      .leader-row h3 + span { font-size: .65rem; }
+      .leader-points { font-size: 1.25rem; line-height: 1.2; }
+      .leader-bar-track { height: 8px; }
+
+      .matches-grid { gap: 8px; }
+      .match-card { padding: 12px 18px; border-radius: 18px; }
+      .match-card .match-sport { font-size: 20px; }
+      .match-card .text-4xl { font-size: 1.75rem; line-height: 1; }
+      .match-card .match-details { font-size: 18px; }
+      .match-card .my-2 { margin-top: 2px; margin-bottom: 2px; }
+      .match-card > div:last-child { padding-top: 5px; }
+      .match-status { padding: 4px 9px; font-size: .7rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .leader-row, .leader-row.place-1::after, .leader-logo, .leader-points,
+      .leader-bar-fill, .leader-bar-fill::after { animation: none !important; }
+      .leader-bar-fill { transform: scaleX(1); }
+    }
+    /* Full-screen public output; selection is controlled by the authenticated admin. */
+    .upcoming-card{padding:50px;text-align:center;margin:auto;width:100%}.upcoming-card h3{font-size:26px;font-weight:700}.upcoming-card p{margin-top:15px;color:#ab9cba}
+    .public-awards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;margin-top:30px}.public-award{text-align:center;padding:28px 20px}.public-award>span{font-size:9px;letter-spacing:2px;color:#f5c042}.public-award h3{font-size:20px;font-weight:700;margin-top:15px;min-height:56px}.public-award img{width:160px;height:160px;object-fit:contain;margin:25px auto}.public-award strong{display:block;font-size:17px}.award-star{height:160px;margin:25px auto;display:grid;place-items:center;font-size:85px;color:#8a749f}
+    @media(max-width:1000px){html,body{height:auto;min-height:100%;overflow:auto}.display-shell{margin:0;width:100%;height:auto;min-height:80vh}.main-stage{min-height:600px;overflow:visible}.sequence-view{position:relative!important;inset:auto!important;display:none!important;height:auto!important}.sequence-view.active{display:block!important}.glass-nav{flex-wrap:wrap;gap:10px;padding:16px!important}.brand-logo{transform:none;width:140px;height:50px}.public-awards{grid-template-columns:1fr}.leader-row{grid-template-columns:32px minmax(0,1fr) 75px!important}.leader-bar-cell{display:none}.leader-row h3{font-size:16px}.leader-logo{width:48px;height:48px}.slide-status{display:none!important}.glass-nav>div{flex-wrap:wrap}.upcoming-card{padding:30px 18px}}
+    /* Scale the standings with the TV viewport, including native 4K output. */
+    @media (min-width: 1001px) {
+      .main-stage { width: 94vw; }
+      #view-leaderboard > div { min-height: 0; }
+      #view-leaderboard > div > div:first-child { flex-shrink: 0; }
+      #view-leaderboard h2 { font-size: min(3vw, 4.5vh); line-height: 1.15; }
+      #view-leaderboard > div > div:first-child > div > span { font-size: min(1.2vw, 1.8vh); }
+      #leaderboard { display: flex; flex-direction: column; flex: 1; min-height: 0; gap: 8px; }
+      .leader-row {
+        flex: 1 1 0; min-height: 0; max-height: 22vh;
+        grid-template-columns: min(5vw, 7vh) minmax(0, .6fr) minmax(100px, 1.08fr) 100px;
+        gap: 1.3vw; padding: 1vh 1.5vw;
+      }
+      .leader-row > div:first-child > span { width: min(4vw, 6vh); height: min(4vw, 6vh); font-size: min(2.2vw, 3.3vh); }
+      .leader-logo { width: min(6vw, 9vh); height: min(6vw, 9vh); flex-basis: min(6vw, 9vh); }
+      .leader-row h3 { font-size: min(2.2vw, 3.3vh); line-height: 1.15; white-space: normal; overflow: visible; overflow-wrap: anywhere; }
+      .leader-row h3 + span { font-size: min(1.2vw, 1.8vh); color: #c9bfd6; }
+      .leader-row .leader-points { font-size: min(3.6vw, 5.4vh); line-height: 1.1; }
+      .leader-points + div { font-size: min(1.1vw, 1.65vh); color: #c9bfd6; }
+      .leader-bar-track { height: 1.4vh; }
+    }
+  </style>
+</head>
+<body>
+  <div class="ambient-canvas">
+    <div class="glow-orb-1"></div>
+    <div class="glow-orb-2"></div>
+  </div>
+
+  <div class="display-shell">
+    <header class="glass-nav px-8 flex items-center justify-between relative z-10">
+      <div class="flex items-center">
+        <img class="brand-logo" src="logo.svg" alt="Southland College Sportsfest 2026 — Torch of Legacy" />
+      </div>
+
+      <div class="flex items-center gap-6">
+        <div class="text-right">
+          <div id="clock" class="text-2xl font-semibold tracking-tight text-white tabular-nums">00:00:00</div>
+          <div id="date" class="text-xs text-white/40 font-medium">Monday · August 31, 2026</div>
+        </div>
+        <div class="apple-badge admin-sync-badge">
+          <div class="admin-sync-heading">
+            <span id="sync-dot" class="status-dot offline"></span>
+            <span id="sync-label" class="text-white/70" role="status">Connecting</span>
+          </div>
+          <span id="last-received" class="text-white/60">No data received yet</span>
+          <span class="sync-divider" aria-hidden="true"></span>
+          <span class="text-white/40">As of</span>
+          <span id="last-updated" class="text-white/80 tabular-nums">Waiting for update</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-stage relative" aria-live="polite">
+      <section id="view-leaderboard" class="sequence-view active">
+        <div class="h-full flex flex-col justify-between">
+          <div class="flex items-end justify-between pb-4">
+            <div>
+              <span class="text-xs font-semibold uppercase tracking-wider text-amber-400">Team Standings</span>
+              <h2 id="department-heading" class="text-3xl font-extrabold tracking-tight text-white mt-0.5">Grade School Department</h2>
+            </div>
+            <div class="apple-badge">Ranked by points</div>
+          </div>
+          <div id="leaderboard" class="flex-1 flex flex-col justify-center"></div>
+        </div>
+      </section>
+
+<section id="view-idle" class="sequence-view"><div class="glass-card upcoming-card"><h3>Sportsfest 2026</h3><p>Stand by for the next event.</p></div></section>
+      <section id="view-awards" class="sequence-view"><h2 class="text-3xl font-extrabold text-white">Special Events & Major Awards</h2><p class="text-white/50 mt-2">Celebrating our competition winners</p><div id="public-awards" class="public-awards"></div></section>
+
+      <section id="view-matches" class="sequence-view">
+        <div class="h-full flex flex-col justify-between">
+          <div class="flex items-end justify-between pb-4">
+            <div>
+              <span class="text-base font-semibold uppercase tracking-wider text-amber-400">Schedule</span>
+              <h2 id="matches-heading" class="text-5xl font-extrabold tracking-tight text-white mt-1">Matches</h2>
+            </div>
+            <div class="apple-badge match-status">Live match updates</div>
+          </div>
+          <div id="matches-grid" class="matches-grid"></div>
+        </div>
+      </section>
+
+      <section id="view-promo" class="sequence-view">
+        <div id="promo-media" class="media-card"></div>
+      </section>
+
+      <section id="view-sportsfest" class="sequence-view">
+        <div id="sportsfest-media" class="media-card"></div>
+      </section>
+    </main>
+
+    <footer class="glass-nav relative flex items-center justify-between px-8 border-t border-white/10">
+      <div class="progress-rail"><div id="progress-bar" class="progress-bar"></div></div>
+
+      <div class="ticker-label flex items-center gap-3 pr-6 border-r border-white/10">
+        <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+        <span class="text-xs font-semibold uppercase tracking-wider text-white/70">Updates</span>
+      </div>
+
+      <div class="ticker-track flex-1 overflow-hidden px-6">
+        <div class="overflow-hidden mask-gradient">
+          <span id="ticker-message" class="ticker-marquee text-sm font-medium text-white/90">Loading announcements...</span>
+        </div>
+      </div>
+
+      <div class="slide-status flex items-center gap-4 pl-6 border-l border-white/10">
+        <span id="slide-name" class="text-xs font-medium text-white/60">Standings</span>
+        <span id="slide-count" class="text-xs font-semibold text-white/40 tabular-nums">01 / 04</span>
+        <div id="slide-dots" class="flex items-center gap-1.5"></div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="video-canvas.js"></script>
+  <script src="basic-ed-data.js"></script>
+  <script src="config.js?v=20260907-supabase"></script>
+  <script src="supabase-client.js"></script>
+  <script>
+    const CONFIG = {
+      POLL_INTERVAL_MS: 30_000,
+      TICKER_PIXELS_PER_SECOND: 55,
+      TICKER_MIN_DURATION_MS: 18_000,
+      TICKER_GAP_MS: 800,
+      AUTO_PAGE_RELOAD_MS: 15 * 60_000,
+      VIEW_DURATIONS_MS: { leaderboard: 30_000, matches: 30_000, promo: 22_000, sportsfest: 18_000 },
+      LOCAL_MEDIA: {
+        // Add future local video paths to these playlists.
+        promoVideos: ['PROMO VIDEO/SC PROMOTIONAL FILM.mp4'],
+        sportsfestVideos: ['sportsfest-motion.mp4'],
+        sportsfestPoster: 'sportsfest-thumbnail.jpg'
+      },
+      STORAGE_KEY: 'southland-sportsfest-2026-live-cache-v2'
+    };
+
+    const DEPARTMENTS = {
+      SECSA: { team: 'Shippuden', short: 'SECSA', color: '#ff6934', logo: 'DEPT LOGOS/SECSA Shippuden.png' },
+      SBA:   { team: 'Surging Dragons', short: 'SBA', color: '#38a5ff', logo: 'DEPT LOGOS/SBA Surging Dragons.png' },
+      STED:  { team: 'Golden Hawks', short: 'STED', color: '#f5c042', logo: 'DEPT LOGOS/STED Golden Hawks.png' },
+      SHARP: { team: 'Celadons Hawks', short: 'SHARP', color: '#30d158', logo: 'DEPT LOGOS/SHARP Celadons Hawks.png' },
+      SHTM:  { team: 'Pink Panthers', short: 'SHTM', color: '#ff5fa2', logo: 'DEPT LOGOS/SHTM Pink Panthers.png' }
+    };
+
+    const EMPTY_DATA = {
+      leaderboard: [],
+      matches: [],
+      media: [],
+      announcements: [],
+      updatedAt: '',
+      generatedAt: '',
+      updatedBy: ''
+    };
+
+    function loadCachedData() {
+      try {
+        const cached = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY) || 'null');
+        if (!cached || typeof cached !== 'object') return { ...EMPTY_DATA };
+        return {
+          ...EMPTY_DATA,
+          ...cached,
+          leaderboard: Array.isArray(cached.leaderboard) ? cached.leaderboard : [],
+          matches: Array.isArray(cached.matches) ? cached.matches : [],
+          media: Array.isArray(cached.media) ? cached.media : [],
+          announcements: Array.isArray(cached.announcements) ? cached.announcements : []
+        };
+      } catch (_) {
+        return { ...EMPTY_DATA };
+      }
+    }
+
+    const state = {
+      data: loadCachedData(),
+      tickerIndex: 0,
+      tickerTimer: null,
+      viewIndex: 0,
+      rotationTimer: null,
+      pointsAnimationFrame: null,
+      pageStartedAt: Date.now(),
+      mediaIndexByType: { 'school-promo': 0, 'sportsfest-motion': 0 }
+    };
+    let selectedDepartment = 'grade';
+    let VIEWS = [];
+
+    const $ = selector => document.querySelector(selector);
+    const escapeHtml = (val = '') => String(val).replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[c]);
+
+    function getRankBadge(rank) {
+      if (rank === 1) return `<span class="w-8 h-8 rounded-full bg-amber-400/20 text-amber-300 font-bold flex items-center justify-center text-sm border border-amber-400/30">1</span>`;
+      if (rank === 2) return `<span class="w-8 h-8 rounded-full bg-slate-300/20 text-slate-200 font-bold flex items-center justify-center text-sm border border-slate-300/30">2</span>`;
+      if (rank === 3) return `<span class="w-8 h-8 rounded-full bg-orange-400/20 text-orange-300 font-bold flex items-center justify-center text-sm border border-orange-400/30">3</span>`;
+      return `<span class="w-8 h-8 rounded-full bg-white/5 text-white/50 font-medium flex items-center justify-center text-sm">${rank}</span>`;
+    }
+
+    function renderLeaderboard() {
+      $('#department-heading').textContent = selectedDepartment === 'college' ? 'College Department' : departments[selectedDepartment].name;
+      let rows;
+      if (selectedDepartment === 'college') {
+        rows = (state.data.leaderboard || []).map(r => ({ dept: String(r.dept || '').toUpperCase(), points: Number(r.points || 0) }));
+      } else {
+        if (!Array.isArray(state.data.basicEdLeaderboard)) {
+          $('#leaderboard').innerHTML = '<div class="glass-card upcoming-card"><h3>Waiting for published results</h3><p>The committee is preparing the latest scores.</p></div>';
+          return;
+        }
+        const totals = Object.fromEntries(state.data.basicEdLeaderboard.map(row => [row.teamId, row.points]));
+        rows = departments[selectedDepartment].teams.map(team => ({ dept: team.id, points: Number(totals[team.id]) || 0, display: { team: team.name, short: team.detail, color: team.color, logo: 'DEPT LOGOS/BASIC ED/' + team.logo } }));
+      }
+      rows.sort((a, b) => b.points - a.points);
+      let rank = 1;
+      const highestPoints = Math.max(...rows.map(row => row.points), 1);
+
+      $('#leaderboard').innerHTML = rows.length ? rows.map((row, idx) => {
+        if (idx && row.points !== rows[idx - 1].points) rank = idx + 1;
+        const dept = row.display || DEPARTMENTS[row.dept] || { team: row.dept, short: row.dept, color: '#f5c042', logo: '' };
+        const isFirst = rank === 1 && row.points > 0;
+        const barWidth = Math.max(0, Math.min(100, (row.points / highestPoints) * 100));
+        return `
+          <article class="leader-row ${isFirst ? 'place-1' : ''}" style="--delay:${idx * 110}ms; --team-color:${dept.color}">
+            <div class="flex items-center gap-3">
+              ${getRankBadge(rank)}
+            </div>
+            <div class="flex items-center gap-3.5 min-w-0">
+              ${dept.logo ? `<img class="leader-logo" src="${escapeHtml(encodeURI(dept.logo))}" alt="${escapeHtml(dept.team)} logo" />` : ''}
+              <div class="min-w-0">
+                <h3 class="text-xl font-bold text-white tracking-tight truncate">${escapeHtml(dept.team)}</h3>
+                <span class="text-xs font-medium text-white/40 tracking-wider">${escapeHtml(dept.short)}</span>
+              </div>
+            </div>
+            <div class="leader-bar-cell" aria-label="${escapeHtml(dept.team)} performance: ${row.points.toLocaleString()} points">
+              <div class="leader-bar-track">
+                <span class="leader-bar-fill" style="--bar-width:${barWidth.toFixed(2)}%"></span>
+              </div>
+            </div>
+            <div class="text-right">
+              <div class="leader-points text-2xl font-bold tracking-tight ${isFirst ? 'text-amber-300' : 'text-white'} tabular-nums" data-final-points="${row.points}">0</div>
+              <div class="text-[10px] uppercase font-semibold text-white/40 tracking-wider">Points</div>
+            </div>
+          </article>
+        `;
+      }).join('') : `
+        <div class="glass-card flex-1 flex flex-col items-center justify-center text-center px-8">
+          <span class="text-amber-300 text-sm font-semibold uppercase tracking-wider">Connecting to live results</span>
+          <p class="text-white/50 text-base mt-2">Waiting for the latest committee update. Sample scores are not displayed.</p>
+        </div>
+      `;
+    }
+
+    function animateLeaderboardPoints() {
+      if (state.pointsAnimationFrame) cancelAnimationFrame(state.pointsAnimationFrame);
+      const counters = [...document.querySelectorAll('#leaderboard .leader-points[data-final-points]')];
+      if (!counters.length) return;
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        counters.forEach(counter => {
+          counter.textContent = Number(counter.dataset.finalPoints || 0).toLocaleString();
+        });
+        return;
+      }
+
+      const startedAt = performance.now();
+      const countDuration = 1450;
+      const rowDelay = 110;
+      const tick = now => {
+        let stillAnimating = false;
+        counters.forEach((counter, index) => {
+          const finalPoints = Math.max(0, Number(counter.dataset.finalPoints || 0));
+          const elapsed = now - startedAt - (index * rowDelay);
+          const progress = Math.max(0, Math.min(1, elapsed / countDuration));
+          const eased = 1 - Math.pow(1 - progress, 3);
+          counter.textContent = Math.round(finalPoints * eased).toLocaleString();
+          if (progress < 1) stillAnimating = true;
+        });
+        if (stillAnimating) state.pointsAnimationFrame = requestAnimationFrame(tick);
+        else state.pointsAnimationFrame = null;
+      };
+      state.pointsAnimationFrame = requestAnimationFrame(tick);
+    }
+
+    function matchTeam(id) {
+      const basic = Object.values(departments).flatMap(dept => dept.teams).find(team => team.id.toUpperCase() === id);
+      return basic ? {short:basic.name,color:'#f5c042'} : DEPARTMENTS[id];
+    }
+    function renderMatches() {
+      const collection = VIEWS[state.viewIndex]?.id === 'matches2' ? 'matches2' : 'matches';
+      const matches = (state.data[collection] || []).slice(0, 4);
+      $('#matches-heading').textContent = 'Matches';
+      $('#matches-grid').innerHTML = matches.length ? matches.map(match => {
+        const deptA = matchTeam(match.teamA) || { short: match.teamA, color: '#fff' };
+        const deptB = matchTeam(match.teamB) || { short: match.teamB, color: '#fff' };
+        const isLive = match.status?.toLowerCase().includes('progress');
+
+        return `
+          <article class="glass-card match-card">
+            <div class="flex items-center justify-between">
+              <span class="match-sport font-bold tracking-wider uppercase">${escapeHtml(match.sport)}</span>
+              <span class="apple-badge match-status ${isLive ? 'theme-pill' : ''}">
+                ${isLive ? '<span class="status-dot"></span>' : ''}
+                ${escapeHtml(match.status || 'Scheduled')}
+              </span>
+            </div>
+
+            <div class="flex items-center justify-between my-2">
+              <div class="flex-1">
+                <span class="text-4xl font-extrabold tracking-tight" style="color: ${deptA.color}">${escapeHtml(deptA.short)}</span>
+              </div>
+              <span class="text-base font-bold text-white/40 px-4">VS</span>
+              <div class="flex-1 text-right">
+                <span class="text-4xl font-extrabold tracking-tight" style="color: ${deptB.color}">${escapeHtml(deptB.short)}</span>
+              </div>
+            </div>
+
+            <div class="match-details flex items-center justify-between pt-3 border-t border-white/5">
+              <span>${escapeHtml(match.venue || 'Campus Venue')}</span>
+              <span class="font-semibold text-white/90">${escapeHtml(match.time)}</span>
+            </div>
+          </article>
+        `;
+      }).join('') : '<div class="glass-card col-span-2 flex items-center justify-center text-white/40 text-sm">No scheduled matches at the moment.</div>';
+    }
+
+    function getMediaPlaylist(type, fallback) {
+      const sheetItems = (state.data.media || []).filter(m => String(m.type || '').toLowerCase() === type);
+      const itemsWithUrls = sheetItems.filter(item => String(item.url || '').trim());
+      if (itemsWithUrls.length) return itemsWithUrls;
+
+      const localUrls = type === 'school-promo'
+        ? CONFIG.LOCAL_MEDIA.promoVideos
+        : CONFIG.LOCAL_MEDIA.sportsfestVideos;
+      const metadata = sheetItems[0] || fallback;
+      return localUrls.map(url => ({ ...fallback, ...metadata, url }));
+    }
+
+    function renderMedia(containerId, type, fallback) {
+      const playlist = getMediaPlaylist(type, fallback);
+      const index = state.mediaIndexByType[type] % Math.max(playlist.length, 1);
+      const item = playlist[index] || fallback;
+      const url = String(item.url || '');
+      const poster = item.poster || (type === 'sportsfest-motion' ? CONFIG.LOCAL_MEDIA.sportsfestPoster : '');
+      const target = $(`#${containerId}`);
+      const mediaKey = `${url}|${poster}`;
+
+      // Keep the current video element alive during 30-second data refreshes.
+      if (target.dataset.mediaKey === mediaKey && target.querySelector('video')) return item;
+      const previousVideo = target.querySelector('video');
+      if (previousVideo) { previousVideo.pause(); previousVideo.disposeSignage?.(); }
+      target.dataset.mediaKey = mediaKey;
+      target.innerHTML = `
+        <video muted playsinline webkit-playsinline disablepictureinpicture disableremoteplayback controlslist="nodownload nofullscreen noremoteplayback" tabindex="-1" preload="metadata" src="${escapeHtml(encodeURI(url))}" ${poster ? `poster="${escapeHtml(encodeURI(poster))}"` : ''} data-fallback-ms="${Math.max(Number(item.duration || 0) * 1000, 0)}"></video>
+        <div class="media-overlay">
+          <span class="apple-badge w-max mb-3 theme-pill">${type === 'school-promo' ? 'Southland Profile' : 'Sportsfest 2026'}</span>
+          <h2 class="text-4xl font-extrabold tracking-tight text-white mb-2">${escapeHtml(item.title || fallback.title)}</h2>
+          <p class="text-base text-white/70 max-w-2xl">${escapeHtml(item.message || fallback.message)}</p>
+        </div>
+      `;
+      window.attachSignageVideo(target.querySelector('video'));
+      return item;
+    }
+
+    function renderAll(refreshLeaderboard = true) {
+      renderPublicAwards();
+      if (refreshLeaderboard) renderLeaderboard();
+      renderMatches();
+      renderMedia('promo-media', 'school-promo', { title: 'Discover Southland College', message: 'A vibrant community dedicated to excellence and leadership.' });
+      renderMedia('sportsfest-media', 'sportsfest-motion', { title: 'Torch of Legacy', message: 'United by culture, empowered by excellence.' });
+    }
+
+    function updateSlideStatus() {
+      const current = VIEWS[state.viewIndex];
+      $('#slide-name').textContent = current.label;
+      $('#slide-count').textContent = `${String(state.viewIndex + 1).padStart(2, '0')} / ${String(VIEWS.length).padStart(2, '0')}`;
+      $('#slide-dots').innerHTML = VIEWS.map((_, i) => `<span class="slide-dot ${i === state.viewIndex ? 'active' : ''}"></span>`).join('');
+    }
+
+    function restartViewProgress(durationMs) {
+      const bar = $('#progress-bar');
+      document.documentElement.style.setProperty('--view-cycle', `${Math.max(durationMs, 1000)}ms`);
+      bar.style.animation = 'none';
+      void bar.offsetWidth;
+      bar.style.animation = '';
+    }
+
+    function showView(index) {
+      if (!VIEWS.length) {
+        clearTimeout(state.rotationTimer);
+        document.querySelectorAll('.media-card video').forEach(video => video.pause());
+        document.querySelector('.display-shell').classList.remove('video-mode');
+        document.querySelectorAll('.sequence-view').forEach(view => view.classList.toggle('active',view.id === 'view-idle'));
+        $('#slide-name').textContent = 'Standby'; $('#slide-count').textContent = '00 / 00'; $('#slide-dots').replaceChildren();
+        $('#progress-bar').style.animation = 'none'; $('#progress-bar').style.opacity = '0';
+        return;
+      }
+      $('#progress-bar').style.opacity = '1';
+      const nextIndex = (index + VIEWS.length) % VIEWS.length;
+      const completedAFullCycle = nextIndex === 0 && state.viewIndex !== 0;
+      const pageRefreshDue = Date.now() - state.pageStartedAt >= CONFIG.AUTO_PAGE_RELOAD_MS;
+      if (completedAFullCycle && pageRefreshDue) {
+        location.reload();
+        return;
+      }
+
+      state.viewIndex = nextIndex;
+      const current = VIEWS[state.viewIndex];
+      if (current.department) { selectedDepartment = current.department; renderLeaderboard(); }
+      if (current.id === 'matches' || current.id === 'matches2') renderMatches();
+      const isVideoView = current.id === 'promo' || current.id === 'sportsfest';
+      const videoType = current.id === 'promo' ? 'school-promo' : current.id === 'sportsfest' ? 'sportsfest-motion' : '';
+
+      if (videoType === 'school-promo') {
+        renderMedia('promo-media', videoType, { title: 'Discover Southland College', message: 'A vibrant community dedicated to excellence and leadership.' });
+      } else if (videoType === 'sportsfest-motion') {
+        renderMedia('sportsfest-media', videoType, { title: 'Torch of Legacy', message: 'United by culture, empowered by excellence.' });
+      }
+
+      document.querySelector('.display-shell').classList.toggle('video-mode', isVideoView);
+
+      document.querySelectorAll('.sequence-view').forEach(view => {
+        view.classList.toggle('active', view.id === `view-${current.department ? 'leaderboard' : current.id === 'matches2' ? 'matches' : current.id}`);
+      });
+      if (current.department) animateLeaderboardPoints();
+
+      let activeVideo = null;
+      document.querySelectorAll('.media-card video').forEach(v => {
+        v.controls = false;
+        v.removeAttribute('controls');
+        v.onended = null;
+        v.onloadedmetadata = null;
+        v.onerror = null;
+        if (v.closest('.sequence-view')?.classList.contains('active')) {
+          activeVideo = v;
+        } else {
+          v.pause();
+        }
+      });
+
+      updateSlideStatus();
+      clearTimeout(state.rotationTimer);
+      const defaultDuration = CONFIG.VIEW_DURATIONS_MS[current.department ? 'leaderboard' : current.id === 'matches2' ? 'matches' : current.id] || 30000;
+
+      if (!activeVideo || !videoType) {
+        restartViewProgress(defaultDuration);
+        state.rotationTimer = setTimeout(() => showView(state.viewIndex + 1), defaultDuration);
+        return;
+      }
+
+      const advanceAfterVideo = () => {
+        if (VIEWS[state.viewIndex].id !== current.id) return;
+        state.mediaIndexByType[videoType] += 1;
+        clearTimeout(state.rotationTimer);
+        showView(state.viewIndex + 1);
+      };
+      const scheduleVideoSafetyTimer = () => {
+        const mediaDuration = Number.isFinite(activeVideo.duration) && activeVideo.duration > 0
+          ? activeVideo.duration * 1000
+          : Number(activeVideo.dataset.fallbackMs) || defaultDuration;
+        clearTimeout(state.rotationTimer);
+        restartViewProgress(mediaDuration);
+        state.rotationTimer = setTimeout(advanceAfterVideo, mediaDuration + 2000);
+      };
+
+      activeVideo.onended = advanceAfterVideo;
+      activeVideo.onloadedmetadata = scheduleVideoSafetyTimer;
+      activeVideo.onerror = () => {
+        clearTimeout(state.rotationTimer);
+        restartViewProgress(3000);
+        state.rotationTimer = setTimeout(advanceAfterVideo, 3000);
+      };
+      if (activeVideo.readyState >= 1) scheduleVideoSafetyTimer();
+      else {
+        const loadingFallback = Math.max(defaultDuration, 30000);
+        restartViewProgress(loadingFallback);
+        state.rotationTimer = setTimeout(advanceAfterVideo, loadingFallback);
+      }
+
+      try { activeVideo.currentTime = 0; } catch (_) {}
+      activeVideo.play().catch(() => {});
+    }
+
+    function updateTicker() {
+      clearTimeout(state.tickerTimer);
+      const list = (state.data.announcements && state.data.announcements.length)
+        ? state.data.announcements
+        : ['Waiting for the latest Sportsfest update...'];
+      const el = $('#ticker-message');
+      el.classList.add('refresh');
+      el.textContent = list[state.tickerIndex % list.length];
+      state.tickerIndex = (state.tickerIndex + 1) % list.length;
+      const track = el.closest('.ticker-track');
+      const travelDistance = Math.max(track?.clientWidth || window.innerWidth, 1) + el.offsetWidth;
+      const durationMs = Math.max(
+        CONFIG.TICKER_MIN_DURATION_MS,
+        Math.round((travelDistance / CONFIG.TICKER_PIXELS_PER_SECOND) * 1000)
+      );
+      document.documentElement.style.setProperty('--ticker-cycle', `${durationMs}ms`);
+      void el.offsetWidth;
+      el.classList.remove('refresh');
+      state.tickerTimer = setTimeout(updateTicker, durationMs + CONFIG.TICKER_GAP_MS);
+    }
+
+    function startTicker() {
+      clearTimeout(state.tickerTimer);
+      updateTicker();
+    }
+
+    function updateClock() {
+      updateConnectionHealth();
+      const now = new Date();
+      $('#clock').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      $('#date').textContent = now.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+    }
+
+    let lastReceivedAt = 0;
+    let connectionFailed = false;
+    let syncInFlight = false;
+    try { lastReceivedAt = Number(localStorage.getItem(CONFIG.STORAGE_KEY + '-received')) || 0; } catch (_) {}
+    function updateConnectionHealth() {
+      const age = lastReceivedAt ? Math.max(0, Math.floor((Date.now() - lastReceivedAt) / 1000)) : null;
+      $('#last-received').textContent = age === null ? 'No data received yet' : 'Received ' + (age < 60 ? age + 's' : Math.floor(age / 60) + 'm') + ' ago';
+      $('#last-received').title = lastReceivedAt ? new Date(lastReceivedAt).toLocaleString() : '';
+      if (!window.SportsfestAPI.configured()) { setSyncStatus('Not configured', true); return; }
+      if (!navigator.onLine || connectionFailed) setSyncStatus(lastReceivedAt ? 'Offline · showing saved results' : 'Offline · waiting for data', true);
+      else if (age !== null && age > 90) setSyncStatus('Delayed · showing saved results', true);
+      else setSyncStatus(lastReceivedAt ? 'Connected' : 'Connecting', !lastReceivedAt);
+    }
+    window.addEventListener('offline', updateConnectionHealth);
+    window.addEventListener('online', () => { updateConnectionHealth(); syncData(); });
+    function setSyncStatus(label, isOffline) {
+      $('#sync-label').textContent = label;
+      $('#sync-dot').classList.toggle('offline', isOffline);
+    }
+
+    function setLastUpdated(value, updatedBy = '') {
+      const element = $('#last-updated');
+      if (!value) {
+        element.textContent = 'Waiting for update';
+        element.title = '';
+        return;
+      }
+      const date = new Date(value);
+      element.textContent = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      element.title = `${date.toLocaleString()}${updatedBy ? ` · Updated by ${updatedBy}` : ''}`;
+    }
+
+    async function syncData() {
+      if (syncInFlight) return;
+      if (!window.SportsfestAPI.configured()) {
+        setSyncStatus('Not configured', true);
+        return;
+      }
+      syncInFlight = true;
+      try {
+        const previousAnnouncements = JSON.stringify(state.data.announcements || []);
+        const payload = await window.SportsfestAPI.publicData();
+        if (payload.ok === false) throw new Error(payload.error || 'Server error');
+        const scoreSection = selectedDepartment === 'college' ? 'leaderboard' : 'basicEdLeaderboard';
+        const scoresChanged = JSON.stringify(state.data[scoreSection]) !== JSON.stringify(payload[scoreSection]);
+        state.data = payload;
+        lastReceivedAt = Date.now(); connectionFailed = false;
+        try {
+          localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(state.data));
+          localStorage.setItem(CONFIG.STORAGE_KEY + '-received', String(lastReceivedAt));
+        } catch (_) {}
+        renderAll(scoresChanged);
+        applyDisplaySettings();
+        if (scoresChanged && VIEWS[state.viewIndex]?.department) animateLeaderboardPoints();
+        if (previousAnnouncements !== JSON.stringify(payload.announcements || [])) {
+          state.tickerIndex = 0;
+          startTicker();
+        }
+        setLastUpdated(payload.updatedAt || payload.generatedAt, payload.updatedBy);
+        updateConnectionHealth();
+      } catch (err) {
+        setLastUpdated(state.data.updatedAt || state.data.generatedAt, state.data.updatedBy);
+        connectionFailed = true;
+        updateConnectionHealth();
+      } finally {
+        syncInFlight = false;
+      }
+    }
+
+    function renderPublicAwards() {
+      const winners = Object.fromEntries((Array.isArray(state.data.specialEvents) ? state.data.specialEvents : []).map(row => [row.eventId, row.winnerTeamId]));
+      const teams = awardDepartments(DEPARTMENTS).flatMap(dept => dept.teams);
+      $('#public-awards').innerHTML = events.map(event => {
+        const team = teams.find(team => team.id === winners[event.id]);
+        return '<article class="glass-card public-award"><span>MAJOR AWARD</span><h3>' + escapeHtml(event.name) + '</h3>' + (team ? '<img src="' + escapeHtml(encodeURI(team.logo)) + '" alt="' + escapeHtml(team.name) + ' logo"><strong>' + escapeHtml(team.name) + '</strong>' : '<div class="award-star">☆</div><strong>Champion to be announced</strong>') + '</article>';
+      }).join('');
+    }
+    let appliedDisplaySettings = '';
+    function applyDisplaySettings() {
+      const enabled = state.data.displaySettings?.sections || Object.fromEntries(DISPLAY_SECTIONS.map(section => [section.id, section.enabled]));
+      const signature = JSON.stringify(enabled);
+      if (signature === appliedDisplaySettings) return;
+      const previous = VIEWS[state.viewIndex]?.id;
+      appliedDisplaySettings = signature;
+      VIEWS = DISPLAY_SECTIONS.filter(section => enabled[section.id] === true).map(section => ({id:section.id,label:section.label,department:['senior','junior','grade','college'].includes(section.id) ? section.id : null}));
+      const retained = VIEWS.findIndex(view => view.id === previous);
+      showView(retained >= 0 ? retained : 0);
+    }
+    // Initialize
+    updateClock();
+    setInterval(updateClock, 1000);
+    setLastUpdated(state.data.updatedAt || state.data.generatedAt, state.data.updatedBy);
+    renderAll();
+    startTicker();
+    applyDisplaySettings();
+    syncData();
+    setInterval(syncData, CONFIG.POLL_INTERVAL_MS);
+  </script>
+</body>
+</html>
