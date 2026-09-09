@@ -472,8 +472,10 @@
       text-transform: uppercase;
     }
     .ticker-viewport {
-      overflow: hidden;
-      white-space: nowrap;
+      overflow: auto;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      max-height: 240px;
       flex: 1;
       color: var(--text-muted);
       font-size: 13px;
@@ -973,10 +975,24 @@
       updateBadges();
     }
 
+    function splitTickerMessage(message) {
+      const parts = [];
+      let remaining = Array.from(message);
+      while (remaining.length > 4000) {
+        let end = 4000;
+        for (let i = 3999; i >= 3000; i--) {
+          if (/\s/.test(remaining[i])) { end = i + 1; break; }
+        }
+        parts.push(remaining.slice(0, end).join(''));
+        remaining = remaining.slice(end);
+      }
+      if (remaining.length || !parts.length) parts.push(remaining.join(''));
+      return parts;
+    }
     function renderAnnouncements() {
       $('#announcements-editor').innerHTML = dashboardData.announcements.length
         ? dashboardData.announcements.map((announcement, index) => `<article class="match-fixture-card announcement-row" data-index="${index}" style="grid-template-columns:minmax(0,1fr) 130px 90px">
-            <label>Announcement<textarea class="a-message" placeholder="Enter the complete scrolling announcement">${escapeHtml(announcement.message || '')}</textarea></label>
+            <label>Announcement<textarea class="a-message" rows="6" style="min-height:140px;resize:vertical" placeholder="Enter the complete scrolling announcement">${escapeHtml(announcement.message || '')}</textarea><small>Long text is welcome. Over 4,000 characters saves as consecutive ticker parts.</small></label>
             <label class="active-toggle"><input class="a-active" type="checkbox" ${announcement.active !== false ? 'checked' : ''}> Show on TV</label>
             <div class="fixture-actions"><button class="button danger small" data-remove="announcement" data-index="${index}" type="button">Remove</button></div>
           </article>`).join('')
@@ -1042,10 +1058,10 @@
         status: row.querySelector('.m-status').value,
         active: row.querySelector('.m-active').checked
       }));
-      dashboardData.announcements = $$('.announcement-row').map(row => ({
-        message: row.querySelector('.a-message').value.trim(),
+      dashboardData.announcements = $$('.announcement-row').flatMap(row => splitTickerMessage(row.querySelector('.a-message').value.trim()).map(message => ({
+        message,
         active: row.querySelector('.a-active').checked
-      }));
+      })));
       Object.assign(dashboardData, collectBasicEdAdmin());
       if (dashboardData.displaySettings?.sections) dashboardData.displaySettings = { sections: Object.fromEntries($$('[data-screen-section]').map(input => [input.dataset.screenSection, input.checked])) };
       return dashboardData;
