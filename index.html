@@ -551,6 +551,14 @@
       .leader-points + div { font-size: min(1.1vw, 1.65vh); color: #c9bfd6; }
       .leader-bar-track { height: 1.4vh; }
     }
+    .phone-qr { display: flex; flex: 0 0 auto; align-items: center; gap: 10px; max-width: 240px; margin-left: 20px; padding-left: 16px; border-left: 1px solid #ffffff1a; }
+    .phone-qr-link { display: block; flex: 0 0 auto; background: white; border-radius: 8px; overflow: hidden; }
+    .phone-qr-link[hidden] { display: none; }
+    .phone-qr-link svg { display: block; width: 64px; height: auto; }
+    .phone-qr strong { display: block; color: #f5c042; font-size: 12px; line-height: 1.3; }
+    .phone-qr p { color: #c9bfd6; font-size: 10px; line-height: 1.35; margin-top: 3px; }
+    footer .ticker-track { min-width: 0; }
+    @media (max-width: 1000px) { .phone-qr { margin-left: auto; max-width: 200px; } }
   </style>
 </head>
 <body>
@@ -641,12 +649,18 @@
         <span id="slide-count" class="text-xs font-semibold text-white/40 tabular-nums">01 / 04</span>
         <div id="slide-dots" class="flex items-center gap-1.5"></div>
       </div>
+      <aside id="phone-qr" class="phone-qr" aria-label="Phone scores">
+        <div><strong>Scan for scores</strong><p id="phone-qr-hint">Preparing phone scores…</p></div>
+        <a id="phone-qr-link" class="phone-qr-link" aria-label="Open Sportsfest phone scores" hidden></a>
+      </aside>
     </footer>
   </div>
 
   <script src="video-canvas.js"></script>
   <script src="basic-ed-data.js"></script>
   <script src="config.js?v=20260907-supabase"></script>
+  <script src="vendor/qrcode.js"></script>
+  <script src="tv-qr.js"></script>
   <script src="supabase-client.js"></script>
   <script>
     const CONFIG = {

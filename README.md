@@ -28,6 +28,7 @@ npx serve . -l 4173
 - TV display: http://localhost:4173/index.html
 - Mobile admin: http://localhost:4173/mobile.html
 - Mobile scores (no sign-in): http://localhost:4173/scores.html
+- Spectator phone page (TV QR destination): http://localhost:4173/phone.html
 - One-time migration: http://localhost:4173/migrate-to-supabase.html
 
 Sign in using an authorized administrator's email and password. Review and publish
@@ -44,6 +45,14 @@ history, owner account controls, and CSV/print/image exports. Media URLs must be
 publicly accessible. Local videos and department logos remain in their existing folders.
 
 Use F11 for a full-screen TV display and disable sleep on the signage computer.
+The TV's bottom-right footer includes a QR code for `phone.html`, a phone-focused standings page
+with department selection and automatic refresh. `PUBLIC_PHONE_URL` in `config.js`
+points to https://sc-sportsftest2026.vercel.app/phone.html so the QR code works
+on the online TV, localhost, and when opening `index.html` directly as a local file.
+Update this setting if the public deployment address changes. If it is blank,
+the QR code uses the current site's address; local files and loopback addresses
+then show a setup hint instead of an unusable QR code.
+QR generation uses the bundled MIT-licensed qrcode-generator 2.0.4 in `vendor/qrcode.js`.
 The TV waits for actual published data and never substitutes sample results.
 
 ## Verification
